@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Website Helmi Candra</title>
+
+    <style>
+        body {
+            background-color: #d6eef7;
+            font-family: Arial, sans-serif;
+            text-align: center;
+            margin: 0;
+        }
+
+        nav {
+            background-color: #333;
+            padding: 15px;
+            position: sticky;
+            top: 0;
+        }
+
+        nav a {
+            color: white;
+            text-decoration: none;
+            margin: 15px;
+            font-size: 18px;
+        }
+
+        .container {
+            width: 80%;
+            max-width: 800px;
+            margin: 30px auto;
+            background: white;
+            padding: 30px;
+            border-radius: 15px;
+            box-shadow: 0px 0px 10px gray;
+        }
+
+        img {
+             width: 220px;
+             height: 220px;
+             border-radius: 50%;
+             object-fit: cover;
+             transition: 0.3s;
+        }
+ 
+        img:hover {
+        transform: scale(1.05);
+        }
+
+        button {
+            background-color: green;
+            color: white;
+            border: none;
+            padding: 12px 25px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 16px;
+        }
+
+        button:hover {
+            background-color: darkgreen;
+        }
+
+        footer {
+            margin-top: 30px;
+            color: gray;
+        }
+
+        ul {
+            list-style: none;
+            padding: 0;
+        }
+
+        li {
+            margin: 8px;
+        }
+    </style>
+</head>
+
+    <meta charset="UTF-8">
+    <title>Website Helmi Candra</title>
+<body>
+
+    <nav>
+        <a href="#home">Home</a>
+        <a href="#tentang">Tentang</a>
+        <h2 id="proyek">Proyek Saya</h2>
+        <a href="#kontak">Kontak</a>
+    </nav>
+
+    <div class="container">
+
+        <h1 id="home">Helmi Candra</h1>
+
+        <img src="fotoku.jpeg" alt="Foto Helmi">
+
+        <h2>Mahasiswa & Pembelajar Teknologi</h2>
+
+        <p>
+            Sedang belajar Linux, Moodle, Web Development,
+    dan Jaringan Komputer..
+        </p>
+
+        <a href="https://wa.me/6282277671650">
+    <button>Hubungi Saya</button>
+</a>
+
+        <hr>
+
+        <h2 id="tentang">Tentang Saya</h2>
+
+        <p>
+            Saya sedang belajar membuat website, mengelola LMS Moodle,
+            menggunakan Linux, dan mempelajari jaringan komputer.
+        </p>
+
+        <h2>Skill</h2>
+
+<ul>
+    <li>Linux Dasar</li>
+    <li>HTML</li>
+    <li>CSS</li>
+    <li>Moodle LMS</li>
+    <li>Jaringan Komputer</li>
+</ul>
+
+<h2>Proyek Saya</h2>
+
+<img src="linux.jpg" width="300">
+<p>Belajar Linux Mint</p>
+
+<img src="moodle.jpg" width="300">
+<p>Praktik Moodle LMS</p>
+
+<ul>
+     <li>- Website Profil Pribadi</li>
+     <li>- Belajar Linux Mint</li>
+     <li>- Praktik Moodle LMS</li>
+     <li>- Belajar HTML dan CSS</li>
+</ul>
+
+<h2 id="kontak">Kontak</h2>
+
+        <p>Email: helmicandra286@gmail.com</p>
+        <p>WhatsApp: 082277671650</p>
+
+        <footer>
+            <p>© 2026 Helmi Candra</p>
+        </footer>
+
+    </div>
+<h2>Waktu Sekarang</h2>
+<p id="jam"></p>
+
+<script>
+setInterval(function(){
+    document.getElementById("jam").innerHTML =
+    new Date().toLocaleTimeString();
+},1000);
+</script>
+</body>
+</html>
