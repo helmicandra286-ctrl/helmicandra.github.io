@@ -109,9 +109,27 @@ td,th{padding:9px;border-bottom:1px solid #ddd;text-align:left}
 
 <section id="rekap" class="page">
 <div class="card">
-<h2>Rekap</h2>
+<h2>Rekap Absensi Santri</h2>
+<div class="grid">
+<div>Tanggal<input type="date" id="rekapTanggal" onchange="renderRekap()"></div>
+<div>Sesi<select id="rekapSesi" onchange="renderRekap()">
+<option value="semua">Semua Sesi</option>
+<option value="pagi">Pagi 08.00–11.00</option>
+<option value="siang">Siang 11.00–Zuhur</option>
+</select></div>
+<div>Kelas<select id="rekapKelas" onchange="renderRekap()"></select></div>
+</div>
+<div class="grid">
+<div class="card"><b>Hadir</b><h2 id="rekapHadir">0</h2></div>
+<div class="card"><b>Tidak Hadir</b><h2 id="rekapTidakHadir">0</h2></div>
+<div class="card"><b>Izin</b><h2 id="rekapIzin">0</h2></div>
+<div class="card"><b>Sakit</b><h2 id="rekapSakit">0</h2></div>
+<div class="card"><b>Alpa</b><h2 id="rekapAlpa">0</h2></div>
+</div>
+<h3>Daftar Santri</h3>
+<div id="tabelRekap">Belum ada data.</div>
+<hr>
 <p>Ustadz hadir: <b id="rekapGuru">0</b></p>
-<p>Data absensi santri: <b id="rekapSantri">0</b></p>
 <p>Materi tercatat: <b id="rekapMateri">0</b></p>
 </div>
 </section>
@@ -201,10 +219,33 @@ function simpanMateri(){
 }
 function refresh(){
  isiGuruSelect();isiKelas();renderGuru();renderSantri();renderMateri();
- $("rekapGuru").textContent=db.absGuru.filter(x=>x.status==="Hadir").length;
- $("rekapSantri").textContent=db.absensi.length;
+ if($("rekapTanggal")) $("rekapTanggal").value=$("rekapTanggal").value||today();
+ if($("rekapKelas")){
+   const v=$("rekapKelas").value||"semua";
+   $("rekapKelas").innerHTML='<option value="semua">Semua Kelas</option>'+KELAS_SEMUA.map(x=>`<option>${x}</option>`).join("");
+   $("rekapKelas").value=v;
+ }
+ renderRekap();
  $("rekapMateri").textContent=db.materi.length;
 }
+function renderRekap(){
+ const t=$("rekapTanggal")?.value||today();
+ const s=$("rekapSesi")?.value||"semua";
+ const k=$("rekapKelas")?.value||"semua";
+ const data=db.absensi.filter(x=>x.tanggal===t&&(s==="semua"||x.sesi===s)&&(k==="semua"||x.k===k));
+ const c=st=>data.filter(x=>x.status===st).length;
+ $("rekapHadir").textContent=c("Hadir");
+ $("rekapIzin").textContent=c("Izin");
+ $("rekapSakit").textContent=c("Sakit");
+ $("rekapAlpa").textContent=c("Alpa");
+ $("rekapTidakHadir").textContent=c("Izin")+c("Sakit")+c("Alpa");
+ $("tabelRekap").innerHTML=data.length?
+ "<table><tr><th>Santri</th><th>Kelas</th><th>Status</th></tr>"+
+ data.map(x=>`<tr><td>${escapeHtml(x.nama)}</td><td>${escapeHtml(x.k)}</td><td>${escapeHtml(x.status)}</td></tr>`).join("")+
+ "</table>":"Belum ada absensi pada pilihan tersebut.";
+ $("rekapGuru").textContent=db.absGuru.filter(x=>x.tanggal===t&&x.status==="Hadir").length;
+}
+
 function renderGuru(){
  $("daftarGuru").innerHTML=db.guru.length?db.guru.map((x,i)=>`<div class="badge">${escapeHtml(x)} <button class="danger" onclick="hapusGuru(${i})">Hapus</button></div>`).join(""):"Belum ada data ustadz.";
 }
