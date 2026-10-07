@@ -240,10 +240,31 @@ function renderRekap(){
  $("rekapAlpa").textContent=c("Alpa");
  $("rekapTidakHadir").textContent=c("Izin")+c("Sakit")+c("Alpa");
  $("tabelRekap").innerHTML=data.length?
- "<table><tr><th>Santri</th><th>Kelas</th><th>Status</th></tr>"+
- data.map(x=>`<tr><td>${escapeHtml(x.nama)}</td><td>${escapeHtml(x.k)}</td><td>${escapeHtml(x.status)}</td></tr>`).join("")+
+ "<table><tr><th>Santri</th><th>Kelas</th><th>Status</th><th>Aksi</th></tr>"+
+ data.map(x=>{
+   const i=db.absensi.indexOf(x);
+   return `<tr><td>${escapeHtml(x.nama)}</td><td>${escapeHtml(x.k)}</td><td>
+   <select id="rs${i}">
+   ${["Hadir","Izin","Sakit","Alpa"].map(st=>`<option ${x.status===st?"selected":""}>${st}</option>`).join("")}
+   </select></td><td>
+   <button onclick="ubahRekap(${i})">Simpan</button>
+   <button class="danger" onclick="hapusRekap(${i})">Hapus</button>
+   </td></tr>`;
+ }).join("")+
  "</table>":"Belum ada absensi pada pilihan tersebut.";
  $("rekapGuru").textContent=db.absGuru.filter(x=>x.tanggal===t&&x.status==="Hadir").length;
+}
+
+function ubahRekap(i){
+ const s=document.getElementById("rs"+i).value;
+ if(db.absensi[i]){db.absensi[i].status=s;saveDB();renderRekap();}
+}
+function hapusRekap(i){
+ if(confirm("Hapus data absensi ini?")){
+   db.absensi.splice(i,1);
+   saveDB();
+   renderRekap();
+ }
 }
 
 function renderGuru(){
