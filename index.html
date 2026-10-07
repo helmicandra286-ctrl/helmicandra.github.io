@@ -46,6 +46,7 @@ th{background:#f1f5f9}
 <button class="tab" onclick="showTab('santri',this)">Santri</button>
 <button class="tab" onclick="showTab('materi',this)">Materi</button>
 <button class="tab" onclick="showTab('rekap',this)">Rekap</button>
+<button class="tab" onclick="showTab('admin',this)">Admin</button>
 </nav>
 
 <main>
@@ -136,6 +137,21 @@ th{background:#f1f5f9}
 <div id="recapList"></div>
 </div>
 </section>
+
+<section id="admin" class="hidden">
+<div class="card">
+<h2>🔒 Rekap Harian Terkunci — Admin</h2>
+<p>Rekap yang sudah dikunci tidak dapat diubah melalui menu absensi biasa. Admin dapat membuka rekap dengan PIN.</p>
+<div class="grid">
+<div><label>Tanggal Rekap</label><input type="date" id="lockDate"></div>
+<div><label>PIN Admin</label><input type="password" id="adminPin" inputmode="numeric" placeholder="Masukkan PIN admin"></div>
+</div>
+<button class="primary" onclick="lockDailyRecap()">Kunci Rekap Hari Ini</button>
+<button class="small" onclick="openLockedRecap()">Buka Rekap Terkunci</button>
+<div id="lockedRecap" class="empty">Rekap terkunci belum dibuka.</div>
+</div>
+</section>
+
 </main>
 
 <script>
@@ -151,7 +167,7 @@ let materials=JSON.parse(localStorage.getItem('darussana_materials')||'[]');
 function today(){return new Date().toISOString().slice(0,10)}
 document.getElementById('absDate').value=today();
 document.getElementById('matDate').value=today();
-document.getElementById('filterDate').value=today();
+document.getElementById('filterDate').value=today(); document.getElementById('lockDate').value=today();
 
 function showTab(id,btn){
  document.querySelectorAll('main>section').forEach(s=>s.classList.add('hidden'));
@@ -185,6 +201,7 @@ function escapeHtml(x){return String(x).replace(/[&<>"']/g,m=>({'&':'&amp;','<':
 
 function saveAttendance(){
  const date=document.getElementById('absDate').value, session=document.getElementById('absSession').value, cls=document.getElementById('absClass').value, teacher=document.getElementById('absTeacher').value;
+ if(isLocked(date)){alert('🔒 Rekap tanggal ini sudah dikunci admin dan tidak dapat diubah.');return}
  if(!date||!session||!cls){alert('Lengkapi tanggal, sesi, dan kelas.');return}
  document.querySelectorAll('#studentAttendance select').forEach(sel=>{
    const sid=sel.dataset.student;
@@ -199,7 +216,52 @@ function saveAttendance(){
 function addTeacher(){
  const name=document.getElementById('teacherName').value.trim(); if(!name)return;
  teachers.push({id:Date.now(),name}); localStorage.setItem('darussana_teachers',JSON.stringify(teachers));
- document.getElementById('teacherName').value=''; refreshAll(); renderTeacherList();
+ document.getElementById('teacherName').value=''; 
+let lockedDates=JSON.parse(localStorage.getItem('darussana_locked_dates')||'[]');
+let adminUnlocked=false;
+
+function lockDailyRecap(){
+ const date=document.getElementById('lockDate').value;
+ if(!date){alert('Pilih tanggal terlebih dahulu.');return}
+ if(!lockedDates.includes(date)){
+   lockedDates.push(date);
+   localStorage.setItem('darussana_locked_dates',JSON.stringify(lockedDates));
+ }
+ alert('Rekap tanggal '+date+' berhasil dikunci.');
+ openLockedRecap();
+}
+
+function openLockedRecap(){
+ const pin=document.getElementById('adminPin').value;
+ // PIN awal: 123456. Dapat diganti pada bagian kode jika diperlukan.
+ if(pin!=='123456'){alert('PIN admin salah.');return}
+ adminUnlocked=true;
+ const date=document.getElementById('lockDate').value;
+ const data=attendance.filter(a=>a.date===date);
+ const el=document.getElementById('lockedRecap');
+ if(!date){el.innerHTML='<div class="empty">Pilih tanggal.</div>';return}
+ if(!lockedDates.includes(date)){
+   el.innerHTML='<div class="empty">Tanggal ini belum dikunci.</div>';return
+ }
+ let count={Hadir:0,Izin:0,Sakit:0,Alpa:0};
+ data.forEach(a=>count[a.status]=(count[a.status]||0)+1);
+ el.innerHTML=`
+ <div class="stats">
+   <div class="stat">Hadir<b>${count.Hadir||0}</b></div>
+   <div class="stat">Izin<b>${count.Izin||0}</b></div>
+   <div class="stat">Sakit<b>${count.Sakit||0}</b></div>
+   <div class="stat">Alpa<b>${count.Alpa||0}</b></div>
+   <div class="stat">Total<b>${data.length}</b></div>
+ </div>
+ <p><span class="badge">🔒 TERKUNCI</span> Rekap tanggal ${date}</p>
+ <table><tr><th>Santri</th><th>Kelas</th><th>Sesi</th><th>Status</th><th>Ustadz</th></tr>
+ ${data.map(a=>`<tr><td>${escapeHtml(a.studentName)}</td><td>${escapeHtml(a.className)}</td><td>${a.session}</td><td>${a.status}</td><td>${escapeHtml(a.teacher||'-')}</td></tr>`).join('')}
+ </table>`;
+}
+
+function isLocked(date){return lockedDates.includes(date)}
+
+refreshAll(); renderTeacherList();
 }
 function deleteTeacher(id){teachers=teachers.filter(x=>x.id!==id);localStorage.setItem('darussana_teachers',JSON.stringify(teachers));refreshAll();renderTeacherList()}
 function renderTeacherList(){
@@ -238,8 +300,8 @@ function renderRecap(){
  const el=document.getElementById('recapList');if(!data.length){el.innerHTML='<div class="empty">Belum ada data absensi.</div>';return}
  el.innerHTML='<table><tr><th>Santri</th><th>Kelas</th><th>Sesi</th><th>Status</th><th>Aksi</th></tr>'+data.slice().reverse().map(a=>`<tr><td>${escapeHtml(a.studentName)}</td><td>${escapeHtml(a.className)}</td><td>${a.session}</td><td><select onchange="changeStatus(${a.id},this.value)"><option ${a.status==='Hadir'?'selected':''}>Hadir</option><option ${a.status==='Izin'?'selected':''}>Izin</option><option ${a.status==='Sakit'?'selected':''}>Sakit</option><option ${a.status==='Alpa'?'selected':''}>Alpa</option></select></td><td><button class="danger" onclick="deleteAttendance(${a.id})">Hapus</button></td></tr>`).join('')+'</table>';
 }
-function changeStatus(id,status){const a=attendance.find(x=>x.id===id);if(a){a.status=status;localStorage.setItem('darussana_attendance',JSON.stringify(attendance));renderRecap()}}
-function deleteAttendance(id){attendance=attendance.filter(x=>x.id!==id);localStorage.setItem('darussana_attendance',JSON.stringify(attendance));renderRecap()}
+function changeStatus(id,status){const a=attendance.find(x=>x.id===id);if(a&&isLocked(a.date)){alert('🔒 Rekap tanggal ini sudah dikunci admin.');renderRecap();return}if(a){a.status=status;localStorage.setItem('darussana_attendance',JSON.stringify(attendance));renderRecap()}}
+function deleteAttendance(id){const a=attendance.find(x=>x.id===id);if(a&&isLocked(a.date)){alert('🔒 Rekap tanggal ini sudah dikunci admin.');return}attendance=attendance.filter(x=>x.id!==id);localStorage.setItem('darussana_attendance',JSON.stringify(attendance));renderRecap()}
 
 function refreshAll(){
  fillSelect('absTeacher',teachers.map(x=>x.name),'Pilih ustadz');
