@@ -1,1 +1,48 @@
+type html>
+<html lang="id">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Administrasi Darussana</title>
+<style>
+body{font-family:Arial;margin:0;background:#f1f5f9;color:#172033}header{background:#087f5b;color:white;text-align:center;padding:18px}nav{display:flex;gap:6px;overflow:auto;background:white;padding:10px;position:sticky;top:0}button{border:0;border-radius:8px;padding:10px 14px;background:#087f5b;color:white}nav button{background:#e2e8f0;color:#172033}.box{max-width:900px;margin:15px auto;padding:0 12px}.card{background:white;border-radius:12px;padding:16px;margin-bottom:15px;box-shadow:0 2px 8px #0001}.page{display:none}.page.on{display:block}.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:10px}input,select,textarea{width:100%;padding:9px;margin:5px 0 12px;border:1px solid #ccd3dc;border-radius:7px;box-sizing:border-box}textarea{min-height:80px}table{width:100%;border-collapse:collapse}td,th{padding:8px;border-bottom:1px solid #ddd;text-align:left}.msg{font-weight:bold;margin-top:10px}
+</style></head>
+<body>
+<header><h1>Administrasi Pesantren Darussana</h1><div>Absensi Santri • Guru • Materi</div></header>
+<nav>
+<button onclick="tab('santri')">Absensi Santri</button><button onclick="tab('guru')">Absensi Guru</button><button onclick="tab('materi')">Materi</button><button onclick="tab('rekap')">Rekap</button>
+</nav>
+<div class="box">
+<section id="santri" class="page on"><div class="card"><h2>Absensi Santri</h2>
+<div class="grid"><div>Tanggal<input type="date" id="sd"></div><div>Kegiatan<select id="sk"><option>Pengajian Pagi 08.00-11.00</option><option>Pelajaran Umum 11.00-Zuhur</option></select></div><div>Kelas<select id="sc"><option>Kelas 1</option><option>Kelas 2</option><option>Kelas 3</option></select></div></div>
+<div id="st"></div><button onclick="saveS()">Simpan Absensi Santri</button><div id="sm" class="msg"></div></div></section>
 
+<section id="guru" class="page"><div class="card"><h2>Absensi Guru / Ustaz</h2>
+Tanggal<input type="date" id="gd">Nama Guru<select id="gn"></select>Kegiatan<select id="gk"><option>Pengajian Pagi</option><option>Pelajaran Umum</option></select>Status<select id="gs"><option>Hadir</option><option>Izin</option><option>Sakit</option><option>Alpa</option></select>
+<button onclick="saveG()">Simpan Absensi Guru</button><div id="gm" class="msg"></div></div>
+<div class="card"><h3>Tambah Guru</h3><input id="newg" placeholder="Nama ustaz/guru"><button onclick="addG()">Tambah</button></div></section>
+
+<section id="materi" class="page"><div class="card"><h2>Materi Pembelajaran</h2>
+Tanggal<input type="date" id="md">Guru<select id="mn"></select>Kelas<select id="mc"><option>Kelas 1</option><option>Kelas 2</option><option>Kelas 3</option></select>Kegiatan<select id="mk"><option>Pengajian Pagi</option><option>Pelajaran Umum</option></select>
+Materi<input id="judul" placeholder="Contoh: Fiqih - Bab Thaharah">Catatan<textarea id="cat" placeholder="Apa yang diajarkan hari ini?"></textarea>
+<button onclick="saveM()">Simpan Materi</button><div id="mm" class="msg"></div></div><div class="card"><h3>Riwayat Materi</h3><div id="ml"></div></div></section>
+
+<section id="rekap" class="page"><div class="card"><h2>Rekap</h2><p>Santri hadir: <b id="rh">0</b></p><p>Guru hadir: <b id="rg">0</b></p><p>Materi tercatat: <b id="rm">0</b></p><button onclick="clearData()">Hapus data perangkat</button></div></section>
+</div>
+<script>
+const names={Kelas1:['Ahmad','Ali','Hasan','Husain','Fajar'],Kelas2:['Abdullah','Rizki','Fauzan','Ilham','Rafi'],Kelas3:['Arif','Dani','Yusuf','Zaki','Fikri']};
+let d=JSON.parse(localStorage.getItem('darussana')||'{"guru":["Ustaz Ahmad","Ustaz Ali","Ustaz Hasan"],"santri":{},"absGuru":[],"materi":[]}');
+const $=id=>document.getElementById(id), today=()=>new Date().toISOString().slice(0,10);
+['sd','gd','md'].forEach(x=>$(x).value=today());
+function tab(x){document.querySelectorAll('.page').forEach(e=>e.classList.remove('on'));$(x).classList.add('on');}
+function fillGuru(){['gn','mn'].forEach(id=>$(id).innerHTML=d.guru.map(x=>'<option>'+x+'</option>').join(''))}
+function renderS(){let c=$('sc').value.replace(' ','');let a=names[c];$('st').innerHTML='<table><tr><th>Santri</th><th>Status</th></tr>'+a.map(n=>'<tr><td>'+n+'</td><td><select class="ss" data-n="'+n+'"><option>Hadir</option><option>Izin</option><option>Sakit</option><option>Alpa</option></select></td></tr>').join('')+'</table>'}
+function saveS(){let date=$('sd').value,key=date+'|'+$('sk').value+'|'+$('sc').value;d.santri[key]={};document.querySelectorAll('.ss').forEach(x=>d.santri[key][x.dataset.n]=x.value);save();$('sm').textContent='✓ Absensi santri tersimpan.'}
+function addG(){let n=$('newg').value.trim();if(n){d.guru.push(n);$('newg').value='';save();fillGuru()}}
+function saveG(){d.absGuru.push({tanggal:$('gd').value,nama:$('gn').value,kegiatan:$('gk').value,status:$('gs').value});save();$('gm').textContent='✓ Absensi guru tersimpan.'}
+function saveM(){d.materi.unshift({tanggal:$('md').value,guru:$('mn').value,kelas:$('mc').value,kegiatan:$('mk').value,judul:$('judul').value,cat:$('cat').value});save();$('judul').value='';$('cat').value='';$('mm').textContent='✓ Materi tersimpan.';renderM()}
+function renderM(){$('ml').innerHTML=d.materi.slice(0,30).map(x=>'<p><b>'+x.tanggal+' — '+x.judul+'</b><br>'+x.guru+' • '+x.kelas+' • '+x.kegiatan+'<br>'+x.cat+'</p>').join('')||'Belum ada data.'}
+function save(){localStorage.setItem('darussana',JSON.stringify(d));renderR()}
+function renderR(){let h=0;Object.values(d.santri).forEach(x=>Object.values(x).forEach(v=>{if(v==='Hadir')h++}));$('rh').textContent=h;$('rg').textContent=d.absGuru.filter(x=>x.status==='Hadir').length;$('rm').textContent=d.materi.length}
+function clearData(){if(confirm('Hapus semua data di perangkat ini?')){localStorage.removeItem('darussana');location.reload()}}
+$('sc').onchange=renderS;fillGuru();renderS();renderM();renderR();
+</script></body></html>
