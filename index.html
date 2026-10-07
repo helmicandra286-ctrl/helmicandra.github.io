@@ -1,48 +1,232 @@
-type html>
+<!doctype html>
 <html lang="id">
 <head>
-<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
-<title>Administrasi Darussana</title>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Administrasi Pesantren Darussana</title>
 <style>
-body{font-family:Arial;margin:0;background:#f1f5f9;color:#172033}header{background:#087f5b;color:white;text-align:center;padding:18px}nav{display:flex;gap:6px;overflow:auto;background:white;padding:10px;position:sticky;top:0}button{border:0;border-radius:8px;padding:10px 14px;background:#087f5b;color:white}nav button{background:#e2e8f0;color:#172033}.box{max-width:900px;margin:15px auto;padding:0 12px}.card{background:white;border-radius:12px;padding:16px;margin-bottom:15px;box-shadow:0 2px 8px #0001}.page{display:none}.page.on{display:block}.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:10px}input,select,textarea{width:100%;padding:9px;margin:5px 0 12px;border:1px solid #ccd3dc;border-radius:7px;box-sizing:border-box}textarea{min-height:80px}table{width:100%;border-collapse:collapse}td,th{padding:8px;border-bottom:1px solid #ddd;text-align:left}.msg{font-weight:bold;margin-top:10px}
-</style></head>
+body{font-family:Arial,sans-serif;margin:0;background:#f1f5f9;color:#172033}
+header{background:#087f5b;color:#fff;text-align:center;padding:18px}
+nav{display:flex;gap:6px;overflow:auto;background:#fff;padding:10px;position:sticky;top:0;z-index:5}
+button{border:0;border-radius:8px;padding:10px 14px;background:#087f5b;color:#fff;cursor:pointer}
+nav button{background:#e2e8f0;color:#172033}
+.box{max-width:1000px;margin:15px auto;padding:0 12px}
+.page{display:none}.page.on{display:block}
+.card{background:#fff;border-radius:12px;padding:16px;margin-bottom:15px;box-shadow:0 2px 8px #0001}
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:10px}
+input,select,textarea{width:100%;padding:10px;margin:5px 0 12px;border:1px solid #ccd3dc;border-radius:7px;box-sizing:border-box}
+textarea{min-height:80px}
+table{width:100%;border-collapse:collapse;overflow:hidden}
+td,th{padding:9px;border-bottom:1px solid #ddd;text-align:left}
+.msg{font-weight:bold;margin-top:10px}
+.small{font-size:13px;color:#64748b}
+.danger{background:#b42318}.secondary{background:#64748b}
+.badge{display:inline-block;padding:5px 8px;border-radius:15px;background:#e2e8f0;margin:2px}
+@media(max-width:600px){header h1{font-size:21px}td,th{font-size:14px}}
+</style>
+</head>
 <body>
-<header><h1>Administrasi Pesantren Darussana</h1><div>Absensi Santri • Guru • Materi</div></header>
+<header>
+<h1>Administrasi Pesantren Darussana</h1>
+<div>Absensi • Data Ustadz • Data Santri • Materi • Rekap</div>
+</header>
+
 <nav>
-<button onclick="tab('santri')">Absensi Santri</button><button onclick="tab('guru')">Absensi Guru</button><button onclick="tab('materi')">Materi</button><button onclick="tab('rekap')">Rekap</button>
+<button onclick="tab('absen')">Absensi</button>
+<button onclick="tab('guru')">Data Ustadz</button>
+<button onclick="tab('santri')">Data Santri</button>
+<button onclick="tab('materi')">Materi</button>
+<button onclick="tab('rekap')">Rekap</button>
 </nav>
+
 <div class="box">
-<section id="santri" class="page on"><div class="card"><h2>Absensi Santri</h2>
-<div class="grid"><div>Tanggal<input type="date" id="sd"></div><div>Kegiatan<select id="sk"><option>Pengajian Pagi 08.00-11.00</option><option>Pelajaran Umum 11.00-Zuhur</option></select></div><div>Kelas<select id="sc"><option>Kelas 1</option><option>Kelas 2</option><option>Kelas 3</option></select></div></div>
-<div id="st"></div><button onclick="saveS()">Simpan Absensi Santri</button><div id="sm" class="msg"></div></div></section>
 
-<section id="guru" class="page"><div class="card"><h2>Absensi Guru / Ustaz</h2>
-Tanggal<input type="date" id="gd">Nama Guru<select id="gn"></select>Kegiatan<select id="gk"><option>Pengajian Pagi</option><option>Pelajaran Umum</option></select>Status<select id="gs"><option>Hadir</option><option>Izin</option><option>Sakit</option><option>Alpa</option></select>
-<button onclick="saveG()">Simpan Absensi Guru</button><div id="gm" class="msg"></div></div>
-<div class="card"><h3>Tambah Guru</h3><input id="newg" placeholder="Nama ustaz/guru"><button onclick="addG()">Tambah</button></div></section>
-
-<section id="materi" class="page"><div class="card"><h2>Materi Pembelajaran</h2>
-Tanggal<input type="date" id="md">Guru<select id="mn"></select>Kelas<select id="mc"><option>Kelas 1</option><option>Kelas 2</option><option>Kelas 3</option></select>Kegiatan<select id="mk"><option>Pengajian Pagi</option><option>Pelajaran Umum</option></select>
-Materi<input id="judul" placeholder="Contoh: Fiqih - Bab Thaharah">Catatan<textarea id="cat" placeholder="Apa yang diajarkan hari ini?"></textarea>
-<button onclick="saveM()">Simpan Materi</button><div id="mm" class="msg"></div></div><div class="card"><h3>Riwayat Materi</h3><div id="ml"></div></div></section>
-
-<section id="rekap" class="page"><div class="card"><h2>Rekap</h2><p>Santri hadir: <b id="rh">0</b></p><p>Guru hadir: <b id="rg">0</b></p><p>Materi tercatat: <b id="rm">0</b></p><button onclick="clearData()">Hapus data perangkat</button></div></section>
+<section id="absen" class="page on">
+<div class="card">
+<h2>Absensi Santri</h2>
+<div class="grid">
+<div>Tanggal<input type="date" id="tanggal"></div>
+<div>Sesi<select id="sesi" onchange="isiKelas()">
+<option value="pagi">Pagi 08.00–11.00</option>
+<option value="siang">Siang 11.00–Zuhur</option>
+</select></div>
+<div>Kelas<select id="kelas" onchange="tampilSantri()"></select></div>
 </div>
+<div id="daftar"></div>
+<button onclick="simpanAbsensi()">Simpan Absensi</button>
+<div id="absMsg" class="msg"></div>
+</div>
+
+<div class="card">
+<h3>Absensi Ustadz</h3>
+<div class="grid">
+<div>Nama Ustadz<select id="guruAbsen"></select></div>
+<div>Status<select id="statusGuru"><option>Hadir</option><option>Izin</option><option>Sakit</option><option>Alpa</option></select></div>
+<div>Kegiatan<select id="kegiatanGuru"><option>Pagi 08.00–11.00</option><option>Siang 11.00–Zuhur</option></select></div>
+</div>
+<button onclick="simpanGuru()">Simpan Absensi Ustadz</button>
+<div id="guruMsg" class="msg"></div>
+</div>
+</section>
+
+<section id="guru" class="page">
+<div class="card">
+<h2>Data Ustadz</h2>
+<p class="small">Bapak bisa menambah nama sendiri. Tidak perlu mengubah kode.</p>
+<input id="namaGuru" placeholder="Nama ustadz/guru">
+<button onclick="tambahGuru()">+ Tambah Ustadz</button>
+<div id="daftarGuru" style="margin-top:15px"></div>
+</div>
+</section>
+
+<section id="santri" class="page">
+<div class="card">
+<h2>Data Santri</h2>
+<div class="grid">
+<div>Nama Santri<input id="namaSantri" placeholder="Nama lengkap santri"></div>
+<div>Kelas<select id="kelasSantri"></select></div>
+</div>
+<button onclick="tambahSantri()">+ Tambah Santri</button>
+<div id="daftarSantri" style="margin-top:15px"></div>
+</div>
+</section>
+
+<section id="materi" class="page">
+<div class="card">
+<h2>Materi Pembelajaran</h2>
+<div class="grid">
+<div>Tanggal<input type="date" id="materiTanggal"></div>
+<div>Ustadz<select id="materiGuru"></select></div>
+<div>Kelas<select id="materiKelas"></select></div>
+</div>
+<input id="judulMateri" placeholder="Judul materi, contoh: Fiqih - Thaharah">
+<textarea id="catatanMateri" placeholder="Catatan / materi yang dipelajari"></textarea>
+<button onclick="simpanMateri()">Simpan Materi</button>
+<div id="materiMsg" class="msg"></div>
+</div>
+<div class="card"><h3>Riwayat Materi</h3><div id="riwayatMateri"></div></div>
+</section>
+
+<section id="rekap" class="page">
+<div class="card">
+<h2>Rekap</h2>
+<p>Ustadz hadir: <b id="rekapGuru">0</b></p>
+<p>Data absensi santri: <b id="rekapSantri">0</b></p>
+<p>Materi tercatat: <b id="rekapMateri">0</b></p>
+</div>
+</section>
+
+</div>
+
 <script>
-const names={Kelas1:['Ahmad','Ali','Hasan','Husain','Fajar'],Kelas2:['Abdullah','Rizki','Fauzan','Ilham','Rafi'],Kelas3:['Arif','Dani','Yusuf','Zaki','Fikri']};
-let d=JSON.parse(localStorage.getItem('darussana')||'{"guru":["Ustaz Ahmad","Ustaz Ali","Ustaz Hasan"],"santri":{},"absGuru":[],"materi":[]}');
-const $=id=>document.getElementById(id), today=()=>new Date().toISOString().slice(0,10);
-['sd','gd','md'].forEach(x=>$(x).value=today());
-function tab(x){document.querySelectorAll('.page').forEach(e=>e.classList.remove('on'));$(x).classList.add('on');}
-function fillGuru(){['gn','mn'].forEach(id=>$(id).innerHTML=d.guru.map(x=>'<option>'+x+'</option>').join(''))}
-function renderS(){let c=$('sc').value.replace(' ','');let a=names[c];$('st').innerHTML='<table><tr><th>Santri</th><th>Status</th></tr>'+a.map(n=>'<tr><td>'+n+'</td><td><select class="ss" data-n="'+n+'"><option>Hadir</option><option>Izin</option><option>Sakit</option><option>Alpa</option></select></td></tr>').join('')+'</table>'}
-function saveS(){let date=$('sd').value,key=date+'|'+$('sk').value+'|'+$('sc').value;d.santri[key]={};document.querySelectorAll('.ss').forEach(x=>d.santri[key][x.dataset.n]=x.value);save();$('sm').textContent='✓ Absensi santri tersimpan.'}
-function addG(){let n=$('newg').value.trim();if(n){d.guru.push(n);$('newg').value='';save();fillGuru()}}
-function saveG(){d.absGuru.push({tanggal:$('gd').value,nama:$('gn').value,kegiatan:$('gk').value,status:$('gs').value});save();$('gm').textContent='✓ Absensi guru tersimpan.'}
-function saveM(){d.materi.unshift({tanggal:$('md').value,guru:$('mn').value,kelas:$('mc').value,kegiatan:$('mk').value,judul:$('judul').value,cat:$('cat').value});save();$('judul').value='';$('cat').value='';$('mm').textContent='✓ Materi tersimpan.';renderM()}
-function renderM(){$('ml').innerHTML=d.materi.slice(0,30).map(x=>'<p><b>'+x.tanggal+' — '+x.judul+'</b><br>'+x.guru+' • '+x.kelas+' • '+x.kegiatan+'<br>'+x.cat+'</p>').join('')||'Belum ada data.'}
-function save(){localStorage.setItem('darussana',JSON.stringify(d));renderR()}
-function renderR(){let h=0;Object.values(d.santri).forEach(x=>Object.values(x).forEach(v=>{if(v==='Hadir')h++}));$('rh').textContent=h;$('rg').textContent=d.absGuru.filter(x=>x.status==='Hadir').length;$('rm').textContent=d.materi.length}
-function clearData(){if(confirm('Hapus semua data di perangkat ini?')){localStorage.removeItem('darussana');location.reload()}}
-$('sc').onchange=renderS;fillGuru();renderS();renderM();renderR();
-</script></body></html>
+const KELAS_PAGI=[
+"Ula 1","Ula 2","Ula 3","Ula 4","Ula 5","Ula 6",
+"Ibtidaiyah 1","Mutawassithah/Wustha","Mutamimmah","Aliyah"
+];
+const KELAS_SIANG=["Wustha 1","Wustha 2","Wustha 3","Aliyah 1","Aliyah 2","Aliyah 3"];
+const KELAS_SEMUA=[...KELAS_PAGI,...KELAS_SIANG];
+
+let db=JSON.parse(localStorage.getItem("darussanaDB")||'{"guru":[],"santri":[],"absensi":[],"absGuru":[],"materi":[]}');
+
+const $=id=>document.getElementById(id);
+const today=()=>new Date().toISOString().slice(0,10);
+
+function saveDB(){localStorage.setItem("darussanaDB",JSON.stringify(db));}
+function tab(id){
+ document.querySelectorAll(".page").forEach(x=>x.classList.remove("on"));
+ $(id).classList.add("on");
+ refresh();
+}
+function kelasAktif(){return $("sesi").value==="pagi"?KELAS_PAGI:KELAS_SIANG}
+function isiKelas(){
+ $("kelas").innerHTML=kelasAktif().map(x=>`<option>${x}</option>`).join("");
+ $("kelasSantri").innerHTML=KELAS_SEMUA.map(x=>`<option>${x}</option>`).join("");
+ $("materiKelas").innerHTML=KELAS_SEMUA.map(x=>`<option>${x}</option>`).join("");
+ tampilSantri();
+}
+function tampilSantri(){
+ const k=$("kelas").value;
+ const list=db.santri.filter(x=>x.kelas===k);
+ if(!list.length){
+   $("daftar").innerHTML="<p>Belum ada santri di kelas ini. Tambahkan nama di menu <b>Data Santri</b>.</p>";
+   return;
+ }
+ $("daftar").innerHTML="<table><tr><th>Santri</th><th>Status</th></tr>"+
+ list.map((x,i)=>`<tr><td>${i+1}. ${x.nama}</td><td>
+ <select class="statusSantri" data-nama="${escapeHtml(x.nama)}">
+ <option>Hadir</option><option>Izin</option><option>Sakit</option><option>Alpa</option>
+ </select></td></tr>`).join("")+"</table>";
+}
+function tambahGuru(){
+ const n=$("namaGuru").value.trim();
+ if(!n)return;
+ if(!db.guru.includes(n))db.guru.push(n);
+ $("namaGuru").value="";saveDB();refresh();
+}
+function hapusGuru(i){
+ if(confirm("Hapus nama ustadz ini?")){db.guru.splice(i,1);saveDB();refresh();}
+}
+function tambahSantri(){
+ const n=$("namaSantri").value.trim(), k=$("kelasSantri").value;
+ if(!n)return;
+ db.santri.push({nama:n,kelas:k});
+ $("namaSantri").value="";saveDB();refresh();
+}
+function hapusSantri(i){
+ if(confirm("Hapus santri ini?")){db.santri.splice(i,1);saveDB();refresh();}
+}
+function isiGuruSelect(){
+ const opts=db.guru.map(x=>`<option>${escapeHtml(x)}</option>`).join("");
+ $("guruAbsen").innerHTML=opts||"<option>Belum ada ustadz</option>";
+ $("materiGuru").innerHTML=opts||"<option>Belum ada ustadz</option>";
+}
+function simpanAbsensi(){
+ const tanggal=$("tanggal").value,k=$("kelas").value,sesi=$("sesi").value;
+ document.querySelectorAll(".statusSantri").forEach(x=>{
+   db.absensi.push({tanggal,k,sesi,nama:x.dataset.nama,status:x.value});
+ });
+ saveDB();$("absMsg").textContent="✓ Absensi santri tersimpan.";
+}
+function simpanGuru(){
+ if(!db.guru.length){$("guruMsg").textContent="Tambahkan ustadz terlebih dahulu.";return}
+ db.absGuru.push({tanggal:$("tanggal").value,nama:$("guruAbsen").value,status:$("statusGuru").value,kegiatan:$("kegiatanGuru").value});
+ saveDB();$("guruMsg").textContent="✓ Absensi ustadz tersimpan.";
+}
+function simpanMateri(){
+ if(!db.guru.length){$("materiMsg").textContent="Tambahkan ustadz terlebih dahulu.";return}
+ const judul=$("judulMateri").value.trim();if(!judul)return;
+ db.materi.unshift({tanggal:$("materiTanggal").value,guru:$("materiGuru").value,kelas:$("materiKelas").value,judul,catatan:$("catatanMateri").value});
+ saveDB();$("judulMateri").value="";$("catatanMateri").value="";
+ $("materiMsg").textContent="✓ Materi tersimpan.";refresh();
+}
+function refresh(){
+ isiGuruSelect();isiKelas();renderGuru();renderSantri();renderMateri();
+ $("rekapGuru").textContent=db.absGuru.filter(x=>x.status==="Hadir").length;
+ $("rekapSantri").textContent=db.absensi.length;
+ $("rekapMateri").textContent=db.materi.length;
+}
+function renderGuru(){
+ $("daftarGuru").innerHTML=db.guru.length?db.guru.map((x,i)=>`<div class="badge">${escapeHtml(x)} <button class="danger" onclick="hapusGuru(${i})">Hapus</button></div>`).join(""):"Belum ada data ustadz.";
+}
+function renderSantri(){
+ let out="";
+ KELAS_SEMUA.forEach(k=>{
+  const a=db.santri.filter(x=>x.kelas===k);
+  if(a.length)out+=`<h4>${k} (${a.length})</h4><table><tr><th>Nama</th><th>Aksi</th></tr>`+
+   a.map(x=>{let i=db.santri.indexOf(x);return `<tr><td>${escapeHtml(x.nama)}</td><td><button class="danger" onclick="hapusSantri(${i})">Hapus</button></td></tr>`}).join("")+"</table>";
+ });
+ $("daftarSantri").innerHTML=out||"Belum ada data santri.";
+}
+function renderMateri(){
+ $("riwayatMateri").innerHTML=db.materi.length?db.materi.slice(0,50).map(x=>`<p><b>${x.tanggal} — ${escapeHtml(x.judul)}</b><br>${escapeHtml(x.guru)} • ${escapeHtml(x.kelas)}<br>${escapeHtml(x.catatan||"")}</p>`).join(""):"Belum ada materi.";
+}
+function escapeHtml(s){
+ return String(s).replace(/[&<>"']/g,m=>({"&":"&amp;","<":"&lt;",">":"&gt;","\"":"&quot;","'":"&#039;"}[m]));
+}
+
+$("tanggal").value=today();
+$("materiTanggal").value=today();
+isiKelas();refresh();
+</script>
+</body>
+</html>
