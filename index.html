@@ -84,7 +84,7 @@ async function initSupabaseSync(){
   try{
     setSyncStatus('Menghubungkan ke Supabase…');
     const {data,error}=await sbClient.from('darussana_shared_data').select('data_key,data_value');
-    if(error) throw error;
+if(error) throw error;
     const rows=data||[];
     if(rows.length){
       for(const row of rows){if(syncKeys.includes(row.data_key) && Array.isArray(row.data_value))localStorage.setItem(row.data_key,JSON.stringify(row.data_value));}
