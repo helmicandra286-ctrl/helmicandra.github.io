@@ -6,313 +6,89 @@
 <title>Administrasi Pesantren Darussana</title>
 <style>
 *{box-sizing:border-box}body{font-family:Arial,sans-serif;margin:0;background:#f3f6f8;color:#1f2937}
-header{background:#0f766e;color:white;padding:18px;text-align:center}
-header h1{margin:0;font-size:22px} header p{margin:6px 0 0}
-nav{display:flex;overflow:auto;background:white;border-bottom:1px solid #ddd}
-nav button{flex:1;min-width:105px;padding:13px 8px;border:0;background:white;font-weight:bold}
-nav button.active{background:#0f766e;color:white}
-main{max-width:1000px;margin:auto;padding:15px}
-.card{background:white;border-radius:12px;padding:16px;margin-bottom:15px;box-shadow:0 2px 8px #00000012}
-h2{font-size:19px;margin-top:0;color:#0f766e}
-label{font-weight:bold;display:block;margin:10px 0 5px}
-input,select,textarea,button{font:inherit}
+header{background:#0f766e;color:white;padding:18px;text-align:center}header h1{margin:0;font-size:22px}header p{margin:6px 0 0}
+nav{display:flex;overflow:auto;background:white;border-bottom:1px solid #ddd}nav button{flex:1;min-width:105px;padding:13px 8px;border:0;background:white;font-weight:bold;cursor:pointer}nav button.active{background:#0f766e;color:white}
+main{max-width:1000px;margin:auto;padding:15px}.card{background:white;border-radius:12px;padding:16px;margin-bottom:15px;box-shadow:0 2px 8px #00000012}
+h2{font-size:19px;margin-top:0;color:#0f766e}label{font-weight:bold;display:block;margin:10px 0 5px}input,select,textarea,button{font:inherit}
 input,select,textarea{width:100%;padding:10px;border:1px solid #cbd5e1;border-radius:8px;background:white}
-button.primary{background:#0f766e;color:white;border:0;padding:11px 15px;border-radius:8px;margin-top:10px}
-button.danger{background:#dc2626;color:white;border:0;padding:7px 10px;border-radius:7px}
-button.small{padding:7px 10px;border:0;border-radius:7px;background:#e2e8f0}
-table{width:100%;border-collapse:collapse;margin-top:12px;font-size:14px}
-th,td{border:1px solid #e2e8f0;padding:8px;text-align:left}
-th{background:#f1f5f9}
-.badge{display:inline-block;padding:4px 8px;border-radius:20px;background:#e6fffb;color:#0f766e;font-size:12px}
-.grid{display:grid;grid-template-columns:repeat(2,1fr);gap:12px}
-@media(max-width:650px){.grid{grid-template-columns:1fr}table{font-size:12px}th,td{padding:6px}}
-.hidden{display:none}.empty{color:#64748b;text-align:center;padding:15px}
-.student-row{border:1px solid #e2e8f0;border-radius:9px;padding:10px;margin:8px 0}
-.student-name{font-weight:bold;margin-bottom:7px}
-.stats{display:grid;grid-template-columns:repeat(5,1fr);gap:8px}
-.stat{background:#f8fafc;border-radius:9px;padding:10px;text-align:center}.stat b{display:block;font-size:20px}
+button.primary{background:#0f766e;color:white;border:0;padding:11px 15px;border-radius:8px;margin-top:10px;cursor:pointer}
+button.danger{background:#dc2626;color:white;border:0;padding:7px 10px;border-radius:7px;cursor:pointer}button.small{padding:9px 10px;border:0;border-radius:7px;background:#e2e8f0;cursor:pointer;margin-top:10px}
+table{width:100%;border-collapse:collapse;margin-top:12px;font-size:14px;display:block;overflow-x:auto}th,td{border:1px solid #e2e8f0;padding:8px;text-align:left}th{background:#f1f5f9}
+.badge{display:inline-block;padding:4px 8px;border-radius:20px;background:#e6fffb;color:#0f766e;font-size:12px}.grid{display:grid;grid-template-columns:repeat(2,1fr);gap:12px}
+@media(max-width:650px){.grid{grid-template-columns:1fr}table{font-size:12px}th,td{padding:6px}}.hidden{display:none}.empty{color:#64748b;text-align:center;padding:15px}
+.student-row{border:1px solid #e2e8f0;border-radius:9px;padding:10px;margin:8px 0}.student-name{font-weight:bold;margin-bottom:7px}
+.stats{display:grid;grid-template-columns:repeat(5,1fr);gap:8px}.stat{background:#f8fafc;border-radius:9px;padding:10px;text-align:center}.stat b{display:block;font-size:20px}
 @media(max-width:650px){.stats{grid-template-columns:repeat(2,1fr)}}
+.note{background:#fff7ed;border:1px solid #fed7aa;padding:10px;border-radius:8px;font-size:13px}
 </style>
 </head>
 <body>
-<header>
-<h1>Administrasi Pesantren Darussana</h1>
-<p>Absensi • Ustadz • Santri • Materi • Rekap</p>
-</header>
-
+<header><h1>Administrasi Pesantren Darussana</h1><p>Absensi • Ustadz • Santri • Materi • Rekap</p></header>
 <nav>
-<button class="tab active" onclick="showTab('absensi',this)">Absensi</button>
-<button class="tab" onclick="showTab('ustadz',this)">Ustadz</button>
-<button class="tab" onclick="showTab('santri',this)">Santri</button>
-<button class="tab" onclick="showTab('materi',this)">Materi</button>
-<button class="tab" onclick="showTab('rekap',this)">Rekap</button>
-<button class="tab" onclick="showTab('admin',this)">Admin</button>
+<button class="tab active" onclick="showTab('absensi',this)">Absensi</button><button class="tab" onclick="showTab('ustadz',this)">Ustadz</button>
+<button class="tab" onclick="showTab('santri',this)">Santri</button><button class="tab" onclick="showTab('materi',this)">Materi</button>
+<button class="tab" onclick="showTab('rekap',this)">Rekap</button><button class="tab" onclick="showTab('admin',this)">Admin</button>
 </nav>
-
 <main>
 <section id="absensi">
-<div class="card">
-<h2>Absensi Santri</h2>
-<div class="grid">
+<div class="card"><h2>Absensi Santri</h2><div class="grid">
 <div><label>Tanggal</label><input type="date" id="absDate"></div>
-<div><label>Sesi Waktu</label>
-<select id="absSession" onchange="updateAbsClasses()">
-<option value="08.00–08.45">08.00–08.45</option>
-<option value="08.45–09.45">08.45–09.45</option>
-<option value="09.45–10.45">09.45–10.45</option>
-<option value="10.45–Zuhur">10.45–Zuhur (Sekolah Umum)</option>
-</select></div>
-<div><label>Kelas</label><select id="absClass" onchange="loadStudentsForAttendance()"></select></div>
-<div><label>Ustadz</label><select id="absTeacher"></select></div>
-</div>
-<div id="studentAttendance"></div>
-<button class="primary" onclick="saveAttendance()">Simpan Absensi</button>
-</div>
-
-<div class="card">
-<h2>Absensi Ustadz</h2>
-<div class="grid">
-<div><label>Nama Ustadz</label><select id="teacherAttendName"></select></div>
-<div><label>Status</label><select id="teacherAttendStatus"><option>Hadir</option><option>Izin</option><option>Sakit</option><option>Alpa</option></select></div>
-</div>
-<button class="primary" onclick="saveTeacherAttendance()">Simpan Kehadiran Ustadz</button>
-</div>
+<div><label>Sesi Waktu</label><select id="absSession" onchange="updateAbsClasses()"><option value="08.00–08.45">08.00–08.45</option><option value="08.45–09.45">08.45–09.45</option><option value="09.45–10.45">09.45–10.45</option><option value="10.45–Zuhur">10.45–Zuhur (Sekolah Umum)</option></select></div>
+<div><label>Kelas</label><select id="absClass" onchange="loadStudentsForAttendance()"></select></div><div><label>Ustadz</label><select id="absTeacher"></select></div>
+</div><div id="studentAttendance"></div><button class="primary" onclick="saveAttendance()">Simpan Absensi</button></div>
+<div class="card"><h2>Absensi Ustadz</h2><div class="grid"><div><label>Nama Ustadz</label><select id="teacherAttendName"></select></div><div><label>Status</label><select id="teacherAttendStatus"><option>Hadir</option><option>Izin</option><option>Sakit</option><option>Alpa</option></select></div></div><button class="primary" onclick="saveTeacherAttendance()">Simpan Kehadiran Ustadz</button></div>
 </section>
-
-<section id="ustadz" class="hidden">
-<div class="card">
-<h2>Data Ustadz</h2>
-<div class="grid"><div><label>Nama Ustadz</label><input id="teacherName" placeholder="Masukkan nama ustadz"></div></div>
-<button class="primary" onclick="addTeacher()">Tambah Ustadz</button>
-<div id="teacherList"></div>
-</div>
-</section>
-
-<section id="santri" class="hidden">
-<div class="card">
-<h2>Data Santri</h2>
-<div class="grid">
-<div><label>Nama Santri</label><input id="studentName" placeholder="Masukkan nama santri"></div>
-<div><label>Kelas</label><select id="studentClass"></select></div>
-</div>
-<button class="primary" onclick="addStudent()">Tambah Santri</button>
-<div id="studentList"></div>
-</div>
-</section>
-
-<section id="materi" class="hidden">
-<div class="card">
-<h2>Materi Pembelajaran</h2>
-<div class="grid">
-<div><label>Tanggal</label><input type="date" id="matDate"></div>
-<div><label>Sesi</label><select id="matSession">
-<option>08.00–08.45</option><option>08.45–09.45</option><option>09.45–10.45</option><option>10.45–Zuhur</option>
-</select></div>
-<div><label>Kelas</label><select id="matClass"></select></div>
-<div><label>Ustadz</label><select id="matTeacher"></select></div>
-</div>
-<label>Judul / Materi yang Dipelajari</label>
-<input id="matTitle" placeholder="Contoh: Fiqih Bab Wudhu">
-<label>Catatan</label>
-<textarea id="matNote" rows="3" placeholder="Catatan pembelajaran"></textarea>
-<button class="primary" onclick="saveMaterial()">Simpan Materi</button>
-</div>
-</section>
-
-<section id="rekap" class="hidden">
-<div class="card">
-<h2>Rekap Absensi</h2>
-<div class="grid">
+<section id="ustadz" class="hidden"><div class="card"><h2>Data Ustadz</h2><label>Nama Ustadz</label><input id="teacherName" placeholder="Masukkan nama ustadz"><button class="primary" onclick="addTeacher()">Tambah Ustadz</button><div id="teacherList"></div></div></section>
+<section id="santri" class="hidden"><div class="card"><h2>Data Santri</h2><div class="grid"><div><label>Nama Santri</label><input id="studentName" placeholder="Masukkan nama santri"></div><div><label>Kelas</label><select id="studentClass"></select></div></div><button class="primary" onclick="addStudent()">Tambah Santri</button><div id="studentList"></div></div></section>
+<section id="materi" class="hidden"><div class="card"><h2>Materi Pembelajaran</h2><div class="grid">
+<div><label>Tanggal</label><input type="date" id="matDate"></div><div><label>Sesi</label><select id="matSession"><option>08.00–08.45</option><option>08.45–09.45</option><option>09.45–10.45</option><option>10.45–Zuhur</option></select></div>
+<div><label>Kelas</label><select id="matClass"></select></div><div><label>Ustadz</label><select id="matTeacher"></select></div></div>
+<label>Judul / Materi yang Dipelajari</label><input id="matTitle" placeholder="Contoh: Fiqih Bab Wudhu"><label>Catatan</label><textarea id="matNote" rows="3" placeholder="Catatan pembelajaran"></textarea><button class="primary" onclick="saveMaterial()">Simpan Materi</button><div id="materialList"></div></div></section>
+<section id="rekap" class="hidden"><div class="card"><h2>Rekap Absensi</h2><div class="grid">
 <div><label>Tanggal</label><input type="date" id="filterDate" onchange="renderRecap()"></div>
-<div><label>Sesi</label><select id="filterSession" onchange="renderRecap">
-<option value="">Semua sesi</option><option>08.00–08.45</option><option>08.45–09.45</option><option>09.45–10.45</option><option>10.45–Zuhur</option>
-</select></div>
-<div><label>Kelas</label><select id="filterClass" onchange="renderRecap()"></select></div>
-</div>
-<div class="stats">
-<div class="stat">Hadir<b id="cHadir">0</b></div><div class="stat">Izin<b id="cIzin">0</b></div>
-<div class="stat">Sakit<b id="cSakit">0</b></div><div class="stat">Alpa<b id="cAlpa">0</b></div>
-<div class="stat">Tidak Hadir<b id="cTidak">0</b></div>
-</div>
-<div id="recapList"></div>
-</div>
-</section>
-
-<section id="admin" class="hidden">
-<div class="card">
-<h2>🔒 Rekap Harian Terkunci — Admin</h2>
-<p>Rekap yang sudah dikunci tidak dapat diubah melalui menu absensi biasa. Admin dapat membuka rekap dengan PIN.</p>
-<div class="grid">
-<div><label>Tanggal Rekap</label><input type="date" id="lockDate"></div>
-<div><label>PIN Admin</label><input type="password" id="adminPin" inputmode="numeric" placeholder="Masukkan PIN admin"></div>
-</div>
-<button class="primary" onclick="lockDailyRecap()">Kunci Rekap Hari Ini</button>
-<button class="small" onclick="openLockedRecap()">Buka Rekap Terkunci</button>
-<div id="lockedRecap" class="empty">Rekap terkunci belum dibuka.</div>
-</div>
-</section>
-
+<div><label>Sesi</label><select id="filterSession" onchange="renderRecap()"><option value="">Semua sesi</option><option>08.00–08.45</option><option>08.45–09.45</option><option>09.45–10.45</option><option>10.45–Zuhur</option></select></div>
+<div><label>Kelas</label><select id="filterClass" onchange="renderRecap()"></select></div></div>
+<div class="stats"><div class="stat">Hadir<b id="cHadir">0</b></div><div class="stat">Izin<b id="cIzin">0</b></div><div class="stat">Sakit<b id="cSakit">0</b></div><div class="stat">Alpa<b id="cAlpa">0</b></div><div class="stat">Tidak Hadir<b id="cTidak">0</b></div></div><div id="recapList"></div></div></section>
+<section id="admin" class="hidden"><div class="card"><h2>🔒 Rekap Harian Terkunci — Admin</h2><p>Rekap yang dikunci tidak dapat diubah dari menu absensi biasa.</p><div class="note">PIN awal admin: <b>123456</b>. Data pada versi ini tersimpan di browser/perangkat ini.</div>
+<div class="grid"><div><label>Tanggal Rekap</label><input type="date" id="lockDate"></div><div><label>PIN Admin</label><input type="password" id="adminPin" inputmode="numeric" placeholder="Masukkan PIN admin"></div></div>
+<button class="primary" onclick="lockDailyRecap()">Kunci Rekap Hari Ini</button><button class="small" onclick="openLockedRecap()">Buka Rekap Terkunci</button><div id="lockedRecap" class="empty">Rekap terkunci belum dibuka.</div></div></section>
 </main>
-
 <script>
+'use strict';
 const morningClasses=['Ula 1','Ula 2','Ula 3','Ula 4','Ula 5','Ula 6','Ibtidaiyah 1','Mutawassithah/Wustha','Mutamimmah','Aliyah'];
 const generalClasses=['Wustha 1','Wustha 2','Wustha 3','Aliyah 1','Aliyah 2','Aliyah 3'];
-const allClasses=[...morningClasses,...generalClasses.filter(x=>!morningClasses.includes(x))];
-let teachers=JSON.parse(localStorage.getItem('darussana_teachers')||'[]');
-let students=JSON.parse(localStorage.getItem('darussana_students')||'[]');
-let attendance=JSON.parse(localStorage.getItem('darussana_attendance')||'[]');
-let teacherAttendance=JSON.parse(localStorage.getItem('darussana_teacher_attendance')||'[]');
-let materials=JSON.parse(localStorage.getItem('darussana_materials')||'[]');
-
-function today(){return new Date().toISOString().slice(0,10)}
-document.getElementById('absDate').value=today();
-document.getElementById('matDate').value=today();
-document.getElementById('filterDate').value=today(); document.getElementById('lockDate').value=today();
-
-function showTab(id,btn){
- document.querySelectorAll('main>section').forEach(s=>s.classList.add('hidden'));
- document.getElementById(id).classList.remove('hidden');
- document.querySelectorAll('.tab').forEach(b=>b.classList.remove('active'));
- btn.classList.add('active');
- if(id==='rekap')renderRecap();
-}
-
-function fillSelect(id,arr,placeholder='Pilih...'){
- const el=document.getElementById(id); if(!el)return;
- el.innerHTML='<option value="">'+placeholder+'</option>'+arr.map(x=>`<option>${x}</option>`).join('');
-}
-function classOptionsForSession(session){
- return session==='10.45–Zuhur'?generalClasses:morningClasses;
-}
-function updateAbsClasses(){
- const cls=classOptionsForSession(document.getElementById('absSession').value);
- fillSelect('absClass',cls,'Pilih kelas');
- loadStudentsForAttendance();
-}
-function loadStudentsForAttendance(){
- const cls=document.getElementById('absClass').value, box=document.getElementById('studentAttendance');
- if(!cls){box.innerHTML='<div class="empty">Pilih kelas terlebih dahulu.</div>';return}
- const list=students.filter(s=>s.className===cls);
- if(!list.length){box.innerHTML='<div class="empty">Belum ada santri di kelas ini. Tambahkan di menu Data Santri.</div>';return}
- box.innerHTML=list.map(s=>`<div class="student-row"><div class="student-name">${escapeHtml(s.name)}</div>
- <select data-student="${s.id}"><option>Hadir</option><option>Izin</option><option>Sakit</option><option>Alpa</option></select></div>`).join('');
-}
-function escapeHtml(x){return String(x).replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#039;'}[m]))}
-
-function saveAttendance(){
- const date=document.getElementById('absDate').value, session=document.getElementById('absSession').value, cls=document.getElementById('absClass').value, teacher=document.getElementById('absTeacher').value;
- if(isLocked(date)){alert('🔒 Rekap tanggal ini sudah dikunci admin dan tidak dapat diubah.');return}
- if(!date||!session||!cls){alert('Lengkapi tanggal, sesi, dan kelas.');return}
- document.querySelectorAll('#studentAttendance select').forEach(sel=>{
-   const sid=sel.dataset.student;
-   attendance=attendance.filter(a=>!(a.date===date&&a.session===session&&a.className===cls&&a.studentId===sid));
-   const st=students.find(s=>s.id===sid);
-   attendance.push({id:Date.now()+Math.random(),date,session,className:cls,studentId:sid,studentName:st.name,status:sel.value,teacher});
- });
- localStorage.setItem('darussana_attendance',JSON.stringify(attendance));
- alert('Absensi santri berhasil disimpan.');
- renderRecap();
-}
-function addTeacher(){
- const name=document.getElementById('teacherName').value.trim(); if(!name)return;
- teachers.push({id:Date.now(),name}); localStorage.setItem('darussana_teachers',JSON.stringify(teachers));
- document.getElementById('teacherName').value=''; 
-let lockedDates=JSON.parse(localStorage.getItem('darussana_locked_dates')||'[]');
+const allClasses=[...new Set([...morningClasses,...generalClasses])];
+function readStore(key){try{return JSON.parse(localStorage.getItem(key)||'[]')}catch(e){return []}}
+let teachers=readStore('darussana_teachers'),students=readStore('darussana_students'),attendance=readStore('darussana_attendance');
+let teacherAttendance=readStore('darussana_teacher_attendance'),materials=readStore('darussana_materials'),lockedDates=readStore('darussana_locked_dates');
 let adminUnlocked=false;
-
-function lockDailyRecap(){
- const date=document.getElementById('lockDate').value;
- if(!date){alert('Pilih tanggal terlebih dahulu.');return}
- if(!lockedDates.includes(date)){
-   lockedDates.push(date);
-   localStorage.setItem('darussana_locked_dates',JSON.stringify(lockedDates));
- }
- alert('Rekap tanggal '+date+' berhasil dikunci.');
- openLockedRecap();
-}
-
-function openLockedRecap(){
- const pin=document.getElementById('adminPin').value;
- // PIN awal: 123456. Dapat diganti pada bagian kode jika diperlukan.
- if(pin!=='123456'){alert('PIN admin salah.');return}
- adminUnlocked=true;
- const date=document.getElementById('lockDate').value;
- const data=attendance.filter(a=>a.date===date);
- const el=document.getElementById('lockedRecap');
- if(!date){el.innerHTML='<div class="empty">Pilih tanggal.</div>';return}
- if(!lockedDates.includes(date)){
-   el.innerHTML='<div class="empty">Tanggal ini belum dikunci.</div>';return
- }
- let count={Hadir:0,Izin:0,Sakit:0,Alpa:0};
- data.forEach(a=>count[a.status]=(count[a.status]||0)+1);
- el.innerHTML=`
- <div class="stats">
-   <div class="stat">Hadir<b>${count.Hadir||0}</b></div>
-   <div class="stat">Izin<b>${count.Izin||0}</b></div>
-   <div class="stat">Sakit<b>${count.Sakit||0}</b></div>
-   <div class="stat">Alpa<b>${count.Alpa||0}</b></div>
-   <div class="stat">Total<b>${data.length}</b></div>
- </div>
- <p><span class="badge">🔒 TERKUNCI</span> Rekap tanggal ${date}</p>
- <table><tr><th>Santri</th><th>Kelas</th><th>Sesi</th><th>Status</th><th>Ustadz</th></tr>
- ${data.map(a=>`<tr><td>${escapeHtml(a.studentName)}</td><td>${escapeHtml(a.className)}</td><td>${a.session}</td><td>${a.status}</td><td>${escapeHtml(a.teacher||'-')}</td></tr>`).join('')}
- </table>`;
-}
-
+function persist(key,value){localStorage.setItem(key,JSON.stringify(value))}
+function today(){const d=new Date();d.setMinutes(d.getMinutes()-d.getTimezoneOffset());return d.toISOString().slice(0,10)}
+function escapeHtml(x){return String(x??'').replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#039;'}[m]))}
+['absDate','matDate','filterDate','lockDate'].forEach(id=>document.getElementById(id).value=today());
+function showTab(id,btn){document.querySelectorAll('main>section').forEach(s=>s.classList.add('hidden'));document.getElementById(id).classList.remove('hidden');document.querySelectorAll('.tab').forEach(b=>b.classList.remove('active'));btn.classList.add('active');if(id==='rekap')renderRecap();if(id==='materi')renderMaterials()}
+function fillSelect(id,arr,placeholder='Pilih...'){const el=document.getElementById(id);if(!el)return;const old=el.value;el.innerHTML='<option value="">'+escapeHtml(placeholder)+'</option>'+arr.map(x=>'<option value="'+escapeHtml(x)+'">'+escapeHtml(x)+'</option>').join('');if(arr.includes(old))el.value=old}
+function classOptionsForSession(session){return session==='10.45–Zuhur'?generalClasses:morningClasses}
+function updateAbsClasses(){const cls=classOptionsForSession(document.getElementById('absSession').value);const current=document.getElementById('absClass').value;fillSelect('absClass',cls,'Pilih kelas');if(cls.includes(current))document.getElementById('absClass').value=current;loadStudentsForAttendance()}
+function loadStudentsForAttendance(){const cls=document.getElementById('absClass').value,box=document.getElementById('studentAttendance');if(!cls){box.innerHTML='<div class="empty">Pilih kelas terlebih dahulu.</div>';return}const list=students.filter(s=>s.className===cls);if(!list.length){box.innerHTML='<div class="empty">Belum ada santri di kelas ini. Tambahkan di menu Data Santri.</div>';return}box.innerHTML=list.map(s=>'<div class="student-row"><div class="student-name">'+escapeHtml(s.name)+'</div><select data-student="'+escapeHtml(s.id)+'"><option>Hadir</option><option>Izin</option><option>Sakit</option><option>Alpa</option></select></div>').join('')}
 function isLocked(date){return lockedDates.includes(date)}
-
-refreshAll(); renderTeacherList();
-}
-function deleteTeacher(id){teachers=teachers.filter(x=>x.id!==id);localStorage.setItem('darussana_teachers',JSON.stringify(teachers));refreshAll();renderTeacherList()}
-function renderTeacherList(){
- const el=document.getElementById('teacherList'); if(!teachers.length){el.innerHTML='<div class="empty">Belum ada data ustadz.</div>';return}
- el.innerHTML='<table><tr><th>Nama</th><th>Aksi</th></tr>'+teachers.map(t=>`<tr><td>${escapeHtml(t.name)}</td><td><button class="danger" onclick="deleteTeacher(${t.id})">Hapus</button></td></tr>`).join('')+'</table>';
-}
-function addStudent(){
- const name=document.getElementById('studentName').value.trim(), cls=document.getElementById('studentClass').value;
- if(!name||!cls){alert('Isi nama dan kelas.');return}
- students.push({id:Date.now()+Math.random(),name,className:cls});
- localStorage.setItem('darussana_students',JSON.stringify(students));
- document.getElementById('studentName').value='';renderStudentList();loadStudentsForAttendance();
-}
-function deleteStudent(id){students=students.filter(x=>x.id!==id);localStorage.setItem('darussana_students',JSON.stringify(students));renderStudentList();loadStudentsForAttendance()}
-function renderStudentList(){
- const el=document.getElementById('studentList'); if(!students.length){el.innerHTML='<div class="empty">Belum ada data santri.</div>';return}
- el.innerHTML='<table><tr><th>Nama</th><th>Kelas</th><th>Aksi</th></tr>'+students.map(s=>`<tr><td>${escapeHtml(s.name)}</td><td>${escapeHtml(s.className)}</td><td><button class="danger" onclick="deleteStudent(${s.id})">Hapus</button></td></tr>`).join('')+'</table>';
-}
-function saveTeacherAttendance(){
- const name=document.getElementById('teacherAttendName').value,status=document.getElementById('teacherAttendStatus').value,date=document.getElementById('absDate').value;
- if(!name){alert('Pilih ustadz.');return}
- teacherAttendance.push({id:Date.now(),date,name,status});
- localStorage.setItem('darussana_teacher_attendance',JSON.stringify(teacherAttendance));alert('Kehadiran ustadz disimpan.');
-}
-function saveMaterial(){
- const date=document.getElementById('matDate').value,session=document.getElementById('matSession').value,cls=document.getElementById('matClass').value,teacher=document.getElementById('matTeacher').value,title=document.getElementById('matTitle').value.trim(),note=document.getElementById('matNote').value.trim();
- if(!date||!cls||!teacher||!title){alert('Lengkapi data materi.');return}
- materials.push({id:Date.now(),date,session,className:cls,teacher,title,note});
- localStorage.setItem('darussana_materials',JSON.stringify(materials));document.getElementById('matTitle').value='';document.getElementById('matNote').value='';alert('Materi berhasil disimpan.');
-}
-function renderRecap(){
- const date=document.getElementById('filterDate').value,session=document.getElementById('filterSession').value,cls=document.getElementById('filterClass').value;
- let data=attendance.filter(a=>(!date||a.date===date)&&(!session||a.session===session)&&(!cls||a.className===cls));
- let count={Hadir:0,Izin:0,Sakit:0,Alpa:0};data.forEach(a=>count[a.status]=(count[a.status]||0)+1);
- document.getElementById('cHadir').textContent=count.Hadir||0;document.getElementById('cIzin').textContent=count.Izin||0;document.getElementById('cSakit').textContent=count.Sakit||0;document.getElementById('cAlpa').textContent=count.Alpa||0;document.getElementById('cTidak').textContent=(count.Izin||0)+(count.Sakit||0)+(count.Alpa||0);
- const el=document.getElementById('recapList');if(!data.length){el.innerHTML='<div class="empty">Belum ada data absensi.</div>';return}
- el.innerHTML='<table><tr><th>Santri</th><th>Kelas</th><th>Sesi</th><th>Status</th><th>Aksi</th></tr>'+data.slice().reverse().map(a=>`<tr><td>${escapeHtml(a.studentName)}</td><td>${escapeHtml(a.className)}</td><td>${a.session}</td><td><select onchange="changeStatus(${a.id},this.value)"><option ${a.status==='Hadir'?'selected':''}>Hadir</option><option ${a.status==='Izin'?'selected':''}>Izin</option><option ${a.status==='Sakit'?'selected':''}>Sakit</option><option ${a.status==='Alpa'?'selected':''}>Alpa</option></select></td><td><button class="danger" onclick="deleteAttendance(${a.id})">Hapus</button></td></tr>`).join('')+'</table>';
-}
-function changeStatus(id,status){const a=attendance.find(x=>x.id===id);if(a&&isLocked(a.date)){alert('🔒 Rekap tanggal ini sudah dikunci admin.');renderRecap();return}if(a){a.status=status;localStorage.setItem('darussana_attendance',JSON.stringify(attendance));renderRecap()}}
-function deleteAttendance(id){const a=attendance.find(x=>x.id===id);if(a&&isLocked(a.date)){alert('🔒 Rekap tanggal ini sudah dikunci admin.');return}attendance=attendance.filter(x=>x.id!==id);localStorage.setItem('darussana_attendance',JSON.stringify(attendance));renderRecap()}
-
-function refreshAll(){
- fillSelect('absTeacher',teachers.map(x=>x.name),'Pilih ustadz');
- fillSelect('teacherAttendName',teachers.map(x=>x.name),'Pilih ustadz');
- fillSelect('matTeacher',teachers.map(x=>x.name),'Pilih ustadz');
- fillSelect('studentClass',allClasses,'Pilih kelas');
- fillSelect('matClass',allClasses,'Pilih kelas');
- fillSelect('filterClass',allClasses,'Semua kelas');
- updateAbsClasses();
- renderTeacherList();renderStudentList();renderRecap();
-}
+function saveAttendance(){const date=document.getElementById('absDate').value,session=document.getElementById('absSession').value,cls=document.getElementById('absClass').value,teacher=document.getElementById('absTeacher').value;if(!date||!session||!cls){alert('Lengkapi tanggal, sesi, dan kelas.');return}if(isLocked(date)){alert('Rekap tanggal ini sudah dikunci admin.');return}const selects=[...document.querySelectorAll('#studentAttendance select[data-student]')];if(!selects.length){alert('Tidak ada santri untuk disimpan. Periksa kelas dan data santri.');return}selects.forEach(sel=>{const sid=sel.dataset.student,st=students.find(s=>String(s.id)===String(sid));if(!st)return;attendance=attendance.filter(a=>!(a.date===date&&a.session===session&&a.className===cls&&String(a.studentId)===String(sid)));attendance.push({id:Date.now()+Math.random(),date,session,className:cls,studentId:sid,studentName:st.name,status:sel.value,teacher})});persist('darussana_attendance',attendance);alert('Absensi santri berhasil disimpan.');renderRecap()}
+function addTeacher(){const name=document.getElementById('teacherName').value.trim();if(!name){alert('Masukkan nama ustadz.');return}if(teachers.some(t=>t.name.toLowerCase()===name.toLowerCase())){alert('Nama ustadz sudah ada.');return}teachers.push({id:Date.now(),name});persist('darussana_teachers',teachers);document.getElementById('teacherName').value='';refreshAll();renderTeacherList()}
+function deleteTeacher(id){if(!confirm('Hapus data ustadz ini?'))return;teachers=teachers.filter(x=>String(x.id)!==String(id));persist('darussana_teachers',teachers);refreshAll()}
+function renderTeacherList(){const el=document.getElementById('teacherList');if(!teachers.length){el.innerHTML='<div class="empty">Belum ada data ustadz.</div>';return}el.innerHTML='<table><tr><th>Nama</th><th>Aksi</th></tr>'+teachers.map(t=>'<tr><td>'+escapeHtml(t.name)+'</td><td><button class="danger" onclick="deleteTeacher('+JSON.stringify(t.id)+')">Hapus</button></td></tr>').join('')+'</table>'}
+function addStudent(){const name=document.getElementById('studentName').value.trim(),cls=document.getElementById('studentClass').value;if(!name||!cls){alert('Isi nama dan kelas.');return}students.push({id:String(Date.now())+Math.random().toString(16).slice(2),name,className:cls});persist('darussana_students',students);document.getElementById('studentName').value='';renderStudentList();loadStudentsForAttendance()}
+function deleteStudent(id){if(!confirm('Hapus data santri ini?'))return;students=students.filter(x=>String(x.id)!==String(id));persist('darussana_students',students);renderStudentList();loadStudentsForAttendance()}
+function renderStudentList(){const el=document.getElementById('studentList');if(!students.length){el.innerHTML='<div class="empty">Belum ada data santri.</div>';return}el.innerHTML='<table><tr><th>Nama</th><th>Kelas</th><th>Aksi</th></tr>'+students.map(s=>'<tr><td>'+escapeHtml(s.name)+'</td><td>'+escapeHtml(s.className)+'</td><td><button class="danger" onclick="deleteStudent('+JSON.stringify(s.id)+')">Hapus</button></td></tr>').join('')+'</table>'}
+function saveTeacherAttendance(){const name=document.getElementById('teacherAttendName').value,status=document.getElementById('teacherAttendStatus').value,date=document.getElementById('absDate').value;if(!date||!name){alert('Pilih tanggal dan ustadz.');return}teacherAttendance.push({id:Date.now(),date,name,status});persist('darussana_teacher_attendance',teacherAttendance);alert('Kehadiran ustadz disimpan.')}
+function saveMaterial(){const date=document.getElementById('matDate').value,session=document.getElementById('matSession').value,cls=document.getElementById('matClass').value,teacher=document.getElementById('matTeacher').value,title=document.getElementById('matTitle').value.trim(),note=document.getElementById('matNote').value.trim();if(!date||!cls||!teacher||!title){alert('Lengkapi tanggal, kelas, ustadz, dan judul materi.');return}materials.push({id:Date.now(),date,session,className:cls,teacher,title,note});persist('darussana_materials',materials);document.getElementById('matTitle').value='';document.getElementById('matNote').value='';renderMaterials();alert('Materi berhasil disimpan.')}
+function renderMaterials(){const el=document.getElementById('materialList');if(!materials.length){el.innerHTML='<div class="empty">Belum ada materi tersimpan.</div>';return}el.innerHTML='<h3>Materi tersimpan</h3><table><tr><th>Tanggal</th><th>Kelas</th><th>Sesi</th><th>Materi</th><th>Ustadz</th><th>Aksi</th></tr>'+materials.slice().reverse().map(m=>'<tr><td>'+escapeHtml(m.date)+'</td><td>'+escapeHtml(m.className)+'</td><td>'+escapeHtml(m.session)+'</td><td>'+escapeHtml(m.title)+(m.note?'<br>'+escapeHtml(m.note):'')+'</td><td>'+escapeHtml(m.teacher)+'</td><td><button class="danger" onclick="deleteMaterial('+m.id+')">Hapus</button></td></tr>').join('')+'</table>'}
+function deleteMaterial(id){if(!confirm('Hapus materi ini?'))return;materials=materials.filter(m=>m.id!==id);persist('darussana_materials',materials);renderMaterials()}
+function renderRecap(){const date=document.getElementById('filterDate').value,session=document.getElementById('filterSession').value,cls=document.getElementById('filterClass').value;const data=attendance.filter(a=>(!date||a.date===date)&&(!session||a.session===session)&&(!cls||a.className===cls));const count={Hadir:0,Izin:0,Sakit:0,Alpa:0};data.forEach(a=>count[a.status]=(count[a.status]||0)+1);document.getElementById('cHadir').textContent=count.Hadir||0;document.getElementById('cIzin').textContent=count.Izin||0;document.getElementById('cSakit').textContent=count.Sakit||0;document.getElementById('cAlpa').textContent=count.Alpa||0;document.getElementById('cTidak').textContent=(count.Izin||0)+(count.Sakit||0)+(count.Alpa||0);const el=document.getElementById('recapList');if(!data.length){el.innerHTML='<div class="empty">Belum ada data absensi.</div>';return}el.innerHTML='<table><tr><th>Santri</th><th>Kelas</th><th>Sesi</th><th>Status</th><th>Ustadz</th><th>Aksi</th></tr>'+data.slice().reverse().map(a=>'<tr><td>'+escapeHtml(a.studentName)+'</td><td>'+escapeHtml(a.className)+'</td><td>'+escapeHtml(a.session)+'</td><td><select onchange="changeStatus('+JSON.stringify(a.id)+',this.value)"><option '+(a.status==='Hadir'?'selected':'')+'>Hadir</option><option '+(a.status==='Izin'?'selected':'')+'>Izin</option><option '+(a.status==='Sakit'?'selected':'')+'>Sakit</option><option '+(a.status==='Alpa'?'selected':'')+'>Alpa</option></select></td><td>'+escapeHtml(a.teacher||'-')+'</td><td><button class="danger" onclick="deleteAttendance('+JSON.stringify(a.id)+')">Hapus</button></td></tr>').join('')+'</table>'}
+function changeStatus(id,status){const a=attendance.find(x=>String(x.id)===String(id));if(a&&isLocked(a.date)){alert('Rekap tanggal ini sudah dikunci admin.');renderRecap();return}if(a){a.status=status;persist('darussana_attendance',attendance);renderRecap()}}
+function deleteAttendance(id){const a=attendance.find(x=>String(x.id)===String(id));if(a&&isLocked(a.date)){alert('Rekap tanggal ini sudah dikunci admin.');return}if(!confirm('Hapus catatan absensi ini?'))return;attendance=attendance.filter(x=>String(x.id)!==String(id));persist('darussana_attendance',attendance);renderRecap()}
+function lockDailyRecap(){const date=document.getElementById('lockDate').value,pin=document.getElementById('adminPin').value;if(pin!=='123456'){alert('PIN admin salah.');return}if(!date){alert('Pilih tanggal terlebih dahulu.');return}if(!attendance.some(a=>a.date===date)){if(!confirm('Belum ada absensi pada tanggal ini. Tetap kunci tanggal?'))return}if(!lockedDates.includes(date)){lockedDates.push(date);persist('darussana_locked_dates',lockedDates)}adminUnlocked=false;alert('Rekap tanggal '+date+' berhasil dikunci.');openLockedRecap()}
+function openLockedRecap(){const pin=document.getElementById('adminPin').value;if(pin!=='123456'){alert('PIN admin salah.');return}const date=document.getElementById('lockDate').value,el=document.getElementById('lockedRecap');if(!date){el.innerHTML='<div class="empty">Pilih tanggal.</div>';return}if(!isLocked(date)){el.innerHTML='<div class="empty">Tanggal ini belum dikunci.</div>';return}adminUnlocked=true;const data=attendance.filter(a=>a.date===date),count={Hadir:0,Izin:0,Sakit:0,Alpa:0};data.forEach(a=>count[a.status]=(count[a.status]||0)+1);el.innerHTML='<div class="stats"><div class="stat">Hadir<b>'+(count.Hadir||0)+'</b></div><div class="stat">Izin<b>'+(count.Izin||0)+'</b></div><div class="stat">Sakit<b>'+(count.Sakit||0)+'</b></div><div class="stat">Alpa<b>'+(count.Alpa||0)+'</b></div><div class="stat">Total<b>'+data.length+'</b></div></div><p><span class="badge">🔒 TERKUNCI</span> Rekap tanggal '+escapeHtml(date)+'</p><table><tr><th>Santri</th><th>Kelas</th><th>Sesi</th><th>Status</th><th>Ustadz</th></tr>'+data.map(a=>'<tr><td>'+escapeHtml(a.studentName)+'</td><td>'+escapeHtml(a.className)+'</td><td>'+escapeHtml(a.session)+'</td><td>'+escapeHtml(a.status)+'</td><td>'+escapeHtml(a.teacher||'-')+'</td></tr>').join('')+'</table>'}
+function refreshAll(){fillSelect('absTeacher',teachers.map(x=>x.name),'Pilih ustadz');fillSelect('teacherAttendName',teachers.map(x=>x.name),'Pilih ustadz');fillSelect('matTeacher',teachers.map(x=>x.name),'Pilih ustadz');fillSelect('studentClass',allClasses,'Pilih kelas');fillSelect('matClass',allClasses,'Pilih kelas');fillSelect('filterClass',allClasses,'Semua kelas');updateAbsClasses();renderTeacherList();renderStudentList();renderRecap();renderMaterials()}
 refreshAll();
 </script>
 </body>
