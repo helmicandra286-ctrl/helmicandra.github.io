@@ -15,7 +15,7 @@
 <section id="admin" class="hidden"><div class="card"><h2>Admin — Kunci/Buka Rekap</h2><div class="note">PIN admin awal: <b>123456</b>. Demi keamanan, ganti PIN pada kode sebelum penggunaan resmi.</div><div class="grid"><div><label>Tanggal Rekap</label><input type="date" id="lockDate"></div><div><label>PIN Admin</label><input type="password" id="adminPin" inputmode="numeric" placeholder="Masukkan PIN admin"></div></div><button class="primary" id="lockBtn">Kunci Rekap Tanggal</button> <button class="secondary" id="unlockBtn">Buka Kunci Tanggal</button> <button class="secondary" id="openRecapBtn">Lihat Rekap Terkunci</button><div id="lockedRecap" class="empty">Pilih tanggal, masukkan PIN, lalu pilih tindakan.</div></div></section>
 </main><script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script><script>
 'use strict';
-const SUPABASE_URL='https://jpoqlvijnbjbnkutjdpng.supabase.co';
+const SUPABASE_URL='https://jpoqlvijnbjbnktjdpng.supabase.co/rest/v1/';
 const SUPABASE_ANON_KEY='sb_publishable_qNBSM1gPbI8BoHpZ_asfig_e_o7RcSk';
 const ADMIN_PIN='123456';
 const keys=['darussana_teachers','darussana_students','darussana_attendance','darussana_teacher_attendance','darussana_materials','darussana_locked_dates'];
