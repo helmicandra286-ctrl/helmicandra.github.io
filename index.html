@@ -56,7 +56,7 @@ table{width:100%;border-collapse:collapse;margin-top:12px;font-size:14px;display
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script>
 'use strict';
-const SUPABASE_URL='https://jpoqlvijnbjbnktjdpng.supabase.co/rest/v1/
+const SUPABASE_URL='https://jpoqlvijnbjbnktjdpng.supabase.co
 const SUPABASE_ANON_KEY='eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Impwb3FsdmlqbmJqYm5rdGpkcG5nIiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTE3NDIzMDIsImV4cCI6MjEwNzMxODMwMn0.qNz5sxCA5f8qnhab_MPats4w-qaGURbAVvgNrBN5p7g';
 let sbClient=null;
 try { if(window.supabase && typeof window.supabase.createClient==='function') sbClient=window.supabase.createClient(SUPABASE_URL,SUPABASE_ANON_KEY); } catch(e) { console.error('Supabase client gagal dimuat',e); }
