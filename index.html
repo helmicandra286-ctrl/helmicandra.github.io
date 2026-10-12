@@ -23,7 +23,7 @@ table{width:100%;border-collapse:collapse;margin-top:12px;font-size:14px;display
 </style>
 </head>
 <body>
-<header><h1>Administrasi Pesantren Darussana</h1><p>Absensi • Ustadz • Santri • Materi • Rekap</p></header>
+<header><h1>Administrasi Pesantren Darussana</h1><p>Absensi • Ustadz • Santri • Materi • Rekap</p><p id="syncStatus" style="font-size:12px">Memuat koneksi…</p></header>
 <nav>
 <button class="tab active" onclick="showTab('absensi',this)">Absensi</button><button class="tab" onclick="showTab('ustadz',this)">Ustadz</button>
 <button class="tab" onclick="showTab('santri',this)">Santri</button><button class="tab" onclick="showTab('materi',this)">Materi</button>
@@ -53,8 +53,14 @@ table{width:100%;border-collapse:collapse;margin-top:12px;font-size:14px;display
 <div class="grid"><div><label>Tanggal Rekap</label><input type="date" id="lockDate"></div><div><label>PIN Admin</label><input type="password" id="adminPin" inputmode="numeric" placeholder="Masukkan PIN admin"></div></div>
 <button class="primary" onclick="lockDailyRecap()">Kunci Rekap Hari Ini</button><button class="small" onclick="openLockedRecap()">Buka Rekap Terkunci</button><div id="lockedRecap" class="empty">Rekap terkunci belum dibuka.</div></div></section>
 </main>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script>
 'use strict';
+const SUPABASE_URL='https://jpoqlvijnbjbnkutjdpng.supabase.co';
+const SUPABASE_ANON_KEY='eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Impwb3FsdmlqbmJqYm5rdGpkcG5nIiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTE3NDIzMDIsImV4cCI6MjEwNzMxODMwMn0.qNz5sxCA5f8qnhab_MPats4w-qaGURbAVvgNrBN5p7g';
+const sbClient=window.supabase.createClient(SUPABASE_URL,SUPABASE_ANON_KEY);
+let remoteReady=false;
+const syncKeys=['darussana_teachers','darussana_students','darussana_attendance','darussana_teacher_attendance','darussana_materials','darussana_locked_dates'];
 const morningClasses=['Ula 1','Ula 2','Ula 3','Ula 4','Ula 5','Ula 6','Ibtidaiyah 1','Mutawassithah/Wustha','Mutamimmah','Aliyah'];
 const generalClasses=['Wustha 1','Wustha 2','Wustha 3','Aliyah 1','Aliyah 2','Aliyah 3'];
 const allClasses=[...new Set([...morningClasses,...generalClasses])];
@@ -62,7 +68,35 @@ function readStore(key){try{return JSON.parse(localStorage.getItem(key)||'[]')}c
 let teachers=readStore('darussana_teachers'),students=readStore('darussana_students'),attendance=readStore('darussana_attendance');
 let teacherAttendance=readStore('darussana_teacher_attendance'),materials=readStore('darussana_materials'),lockedDates=readStore('darussana_locked_dates');
 let adminUnlocked=false;
-function persist(key,value){localStorage.setItem(key,JSON.stringify(value))}
+function persist(key,value){
+  localStorage.setItem(key,JSON.stringify(value));
+  if(remoteReady && syncKeys.includes(key)) syncData(key,value);
+}
+async function syncData(key,value){
+  try{
+    const {error}=await sbClient.from('darussana_shared_data').upsert({data_key:key,data_value:value,updated_at:new Date().toISOString()},{onConflict:'data_key'});
+    if(error) throw error;
+    setSyncStatus('Tersinkron ke Supabase');
+  }catch(e){console.error(e);setSyncStatus('Gagal sinkron: '+(e.message||'periksa koneksi'));}
+}
+function setSyncStatus(message){let el=document.getElementById('syncStatus');if(el)el.textContent=message;}
+async function initSupabaseSync(){
+  try{
+    setSyncStatus('Menghubungkan ke Supabase…');
+    const {data,error}=await sbClient.from('darussana_shared_data').select('data_key,data_value');
+    if(error) throw error;
+    const rows=data||[];
+    if(rows.length){
+      for(const row of rows){if(syncKeys.includes(row.data_key) && Array.isArray(row.data_value))localStorage.setItem(row.data_key,JSON.stringify(row.data_value));}
+    }else{
+      // Seed shared storage from this browser only when the shared table is empty.
+      for(const key of syncKeys){let value;try{value=JSON.parse(localStorage.getItem(key)||'[]')}catch(_){value=[]}await syncData(key,value);}
+    }
+    teachers=readStore('darussana_teachers');students=readStore('darussana_students');attendance=readStore('darussana_attendance');
+    teacherAttendance=readStore('darussana_teacher_attendance');materials=readStore('darussana_materials');lockedDates=readStore('darussana_locked_dates');
+    remoteReady=true;refreshAll();setSyncStatus('Terhubung ke Supabase');
+  }catch(e){console.error(e);setSyncStatus('Belum tersambung: '+(e.message||'periksa pengaturan'));refreshAll();}
+}
 function today(){const d=new Date();d.setMinutes(d.getMinutes()-d.getTimezoneOffset());return d.toISOString().slice(0,10)}
 function escapeHtml(x){return String(x??'').replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#039;'}[m]))}
 ['absDate','matDate','filterDate','lockDate'].forEach(id=>document.getElementById(id).value=today());
@@ -90,6 +124,7 @@ function lockDailyRecap(){const date=document.getElementById('lockDate').value,p
 function openLockedRecap(){const pin=document.getElementById('adminPin').value;if(pin!=='123456'){alert('PIN admin salah.');return}const date=document.getElementById('lockDate').value,el=document.getElementById('lockedRecap');if(!date){el.innerHTML='<div class="empty">Pilih tanggal.</div>';return}if(!isLocked(date)){el.innerHTML='<div class="empty">Tanggal ini belum dikunci.</div>';return}adminUnlocked=true;const data=attendance.filter(a=>a.date===date),count={Hadir:0,Izin:0,Sakit:0,Alpa:0};data.forEach(a=>count[a.status]=(count[a.status]||0)+1);el.innerHTML='<div class="stats"><div class="stat">Hadir<b>'+(count.Hadir||0)+'</b></div><div class="stat">Izin<b>'+(count.Izin||0)+'</b></div><div class="stat">Sakit<b>'+(count.Sakit||0)+'</b></div><div class="stat">Alpa<b>'+(count.Alpa||0)+'</b></div><div class="stat">Total<b>'+data.length+'</b></div></div><p><span class="badge">🔒 TERKUNCI</span> Rekap tanggal '+escapeHtml(date)+'</p><table><tr><th>Santri</th><th>Kelas</th><th>Sesi</th><th>Status</th><th>Ustadz</th></tr>'+data.map(a=>'<tr><td>'+escapeHtml(a.studentName)+'</td><td>'+escapeHtml(a.className)+'</td><td>'+escapeHtml(a.session)+'</td><td>'+escapeHtml(a.status)+'</td><td>'+escapeHtml(a.teacher||'-')+'</td></tr>').join('')+'</table>'}
 function refreshAll(){fillSelect('absTeacher',teachers.map(x=>x.name),'Pilih ustadz');fillSelect('teacherAttendName',teachers.map(x=>x.name),'Pilih ustadz');fillSelect('matTeacher',teachers.map(x=>x.name),'Pilih ustadz');fillSelect('studentClass',allClasses,'Pilih kelas');fillSelect('matClass',allClasses,'Pilih kelas');fillSelect('filterClass',allClasses,'Semua kelas');updateAbsClasses();renderTeacherList();renderStudentList();renderRecap();renderMaterials()}
 refreshAll();
+initSupabaseSync();
 </script>
 </body>
 </html>
