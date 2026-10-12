@@ -58,7 +58,9 @@ table{width:100%;border-collapse:collapse;margin-top:12px;font-size:14px;display
 'use strict';
 https://jpoqlvijnbjbnktjdpng.supabase.co/rest/v1/
 const SUPABASE_ANON_KEY='eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Impwb3FsdmlqbmJqYm5rdGpkcG5nIiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTE3NDIzMDIsImV4cCI6MjEwNzMxODMwMn0.qNz5sxCA5f8qnhab_MPats4w-qaGURbAVvgNrBN5p7g';
-const sbClient=window.supabase.createClient(SUPABASE_URL,SUPABASE_ANON_KEY);
+const sbClient = window.supabase?.createClient
+  ? window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY)
+  : null; 
 let remoteReady=false;
 const syncKeys=['darussana_teachers','darussana_students','darussana_attendance','darussana_teacher_attendance','darussana_materials','darussana_locked_dates'];
 const morningClasses=['Ula 1','Ula 2','Ula 3','Ula 4','Ula 5','Ula 6','Ibtidaiyah 1','Mutawassithah/Wustha','Mutamimmah','Aliyah'];
