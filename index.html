@@ -56,11 +56,10 @@ table{width:100%;border-collapse:collapse;margin-top:12px;font-size:14px;display
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script>
 'use strict';
-https://jpoqlvijnbjbnktjdpng.supabase.co/rest/v1/
+const SUPABASE_URL='https://jpoqlvijnbjbnktjdpng.supabase.co/rest/v1/
 const SUPABASE_ANON_KEY='eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Impwb3FsdmlqbmJqYm5rdGpkcG5nIiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTE3NDIzMDIsImV4cCI6MjEwNzMxODMwMn0.qNz5sxCA5f8qnhab_MPats4w-qaGURbAVvgNrBN5p7g';
-const sbClient = window.supabase?.createClient
-  ? window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY)
-  : null; 
+let sbClient=null;
+try { if(window.supabase && typeof window.supabase.createClient==='function') sbClient=window.supabase.createClient(SUPABASE_URL,SUPABASE_ANON_KEY); } catch(e) { console.error('Supabase client gagal dimuat',e); }
 let remoteReady=false;
 const syncKeys=['darussana_teachers','darussana_students','darussana_attendance','darussana_teacher_attendance','darussana_materials','darussana_locked_dates'];
 const morningClasses=['Ula 1','Ula 2','Ula 3','Ula 4','Ula 5','Ula 6','Ibtidaiyah 1','Mutawassithah/Wustha','Mutamimmah','Aliyah'];
@@ -75,6 +74,7 @@ function persist(key,value){
   if(remoteReady && syncKeys.includes(key)) syncData(key,value);
 }
 async function syncData(key,value){
+  if(!sbClient){setSyncStatus('Menu berfungsi, pustaka Supabase belum termuat');return;}
   try{
     const {error}=await sbClient.from('darussana_shared_data').upsert({data_key:key,data_value:value,updated_at:new Date().toISOString()},{onConflict:'data_key'});
     if(error) throw error;
@@ -83,10 +83,11 @@ async function syncData(key,value){
 }
 function setSyncStatus(message){let el=document.getElementById('syncStatus');if(el)el.textContent=message;}
 async function initSupabaseSync(){
+  if(!sbClient){setSyncStatus('Menu berfungsi; koneksi Supabase belum siap');return;}
   try{
     setSyncStatus('Menghubungkan ke Supabase…');
     const {data,error}=await sbClient.from('darussana_shared_data').select('data_key,data_value');
-if(error) throw error;
+    if(error) throw error;
     const rows=data||[];
     if(rows.length){
       for(const row of rows){if(syncKeys.includes(row.data_key) && Array.isArray(row.data_value))localStorage.setItem(row.data_key,JSON.stringify(row.data_value));}
