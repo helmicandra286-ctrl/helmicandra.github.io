@@ -57,7 +57,7 @@ table{width:100%;border-collapse:collapse;margin-top:12px;font-size:14px;display
 <script>
 const SUPABASE_URL = 'https://jpoqlvijnbjbnkutjdpng.supabase.co';
 const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Impwb3FsdmlqbmJqYm5rdGpkcG5nIiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTE3NDIzMDIsImV4cCI6MjEwNzMxODMwMn0.qNz5sxCA5f8qnhab_MPats4w-qaGURbAVvgNrBN5p7g';
-const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+const supabase = (window.supabase && window.supabase.createClient) ? window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY) : null;
 let cloudReady = false;
 'use strict';
 const morningClasses=['Ula 1','Ula 2','Ula 3','Ula 4','Ula 5','Ula 6','Ibtidaiyah 1','Mutawassithah/Wustha','Mutamimmah','Aliyah'];
@@ -70,6 +70,7 @@ let adminUnlocked=false;
 function cloudError(error, context){console.error(context,error);alert(context+' gagal tersimpan ke Supabase. Periksa kebijakan akses tabel. Data lokal tidak otomatis menjadi data bersama.');}
 async function loadCloudData(){
   try {
+    if(!supabase) throw new Error('Supabase JS gagal dimuat dari CDN');
     const [t,s,a] = await Promise.all([
       supabase.from('darussana_teachers').select('*').order('name'),
       supabase.from('darussana_students').select('*').order('name'),
@@ -94,6 +95,7 @@ function updateAbsClasses(){const cls=classOptionsForSession(document.getElement
 function loadStudentsForAttendance(){const cls=document.getElementById('absClass').value,box=document.getElementById('studentAttendance');if(!cls){box.innerHTML='<div class="empty">Pilih kelas terlebih dahulu.</div>';return}const list=students.filter(s=>s.className===cls);if(!list.length){box.innerHTML='<div class="empty">Belum ada santri di kelas ini. Tambahkan di menu Data Santri.</div>';return}box.innerHTML=list.map(s=>'<div class="student-row"><div class="student-name">'+escapeHtml(s.name)+'</div><select data-student="'+escapeHtml(s.id)+'"><option>Hadir</option><option>Izin</option><option>Sakit</option><option>Alpa</option></select></div>').join('')}
 function isLocked(date){return lockedDates.includes(date)}
 async function saveAttendance(){
+ if(!supabase){alert('Koneksi Supabase belum termuat. Muat ulang halaman atau periksa koneksi internet.');return}
  const date=document.getElementById('absDate').value,session=document.getElementById('absSession').value,cls=document.getElementById('absClass').value,teacher=document.getElementById('absTeacher').value;
  if(!date||!session||!cls){alert('Lengkapi tanggal, sesi, dan kelas.');return}
  if(isLocked(date)){alert('Rekap tanggal ini sudah dikunci admin.');return}
@@ -109,6 +111,7 @@ async function saveAttendance(){
  persist('darussana_attendance',attendance);alert('Absensi berhasil disimpan ke Supabase.');renderRecap();
 }
 async function addTeacher(){
+ if(!supabase){alert('Koneksi Supabase belum termuat. Muat ulang halaman atau periksa koneksi internet.');return}
  const name=document.getElementById('teacherName').value.trim();if(!name){alert('Masukkan nama ustadz.');return}
  if(teachers.some(t=>t.name.toLowerCase()===name.toLowerCase())){alert('Nama ustadz sudah ada.');return}
  const id=String(Date.now());
@@ -117,6 +120,7 @@ async function addTeacher(){
  teachers.push({id,name});persist('darussana_teachers',teachers);document.getElementById('teacherName').value='';refreshAll();
 }
 async function deleteTeacher(id){
+ if(!supabase){alert('Koneksi Supabase belum termuat. Muat ulang halaman atau periksa koneksi internet.');return}
  if(!confirm('Hapus data ustadz ini?'))return;
  const {error}=await supabase.from('darussana_teachers').delete().eq('id',String(id));
  if(error){cloudError(error,'Hapus ustadz');return}
@@ -124,6 +128,7 @@ async function deleteTeacher(id){
 }
 function renderTeacherList(){const el=document.getElementById('teacherList');if(!teachers.length){el.innerHTML='<div class="empty">Belum ada data ustadz.</div>';return}el.innerHTML='<table><tr><th>Nama</th><th>Aksi</th></tr>'+teachers.map(t=>'<tr><td>'+escapeHtml(t.name)+'</td><td><button class="danger" onclick="deleteTeacher('+JSON.stringify(t.id)+')">Hapus</button></td></tr>').join('')+'</table>'}
 async function addStudent(){
+ if(!supabase){alert('Koneksi Supabase belum termuat. Muat ulang halaman atau periksa koneksi internet.');return}
  const name=document.getElementById('studentName').value.trim(),cls=document.getElementById('studentClass').value;
  if(!name||!cls){alert('Isi nama dan kelas.');return}
  const id=String(Date.now())+Math.random().toString(16).slice(2);
@@ -132,6 +137,7 @@ async function addStudent(){
  students.push({id,name,className:cls});persist('darussana_students',students);document.getElementById('studentName').value='';renderStudentList();loadStudentsForAttendance();
 }
 async function deleteStudent(id){
+ if(!supabase){alert('Koneksi Supabase belum termuat. Muat ulang halaman atau periksa koneksi internet.');return}
  if(!confirm('Hapus data santri ini?'))return;
  const {error}=await supabase.from('darussana_students').delete().eq('id',String(id));
  if(error){cloudError(error,'Hapus santri');return}
